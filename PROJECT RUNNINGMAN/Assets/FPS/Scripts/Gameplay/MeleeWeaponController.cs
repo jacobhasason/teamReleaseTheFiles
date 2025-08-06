@@ -7,6 +7,9 @@ public class MeleeWeaponController : WeaponController
     public float Damage = 40f;
     public float Range = 2f;
     public float AttackRate = 1f;
+    public Animator WeaponAnimator;
+
+
 
     float m_LastAttackTime;
 
@@ -30,6 +33,9 @@ public class MeleeWeaponController : WeaponController
 
     void PerformAttack()
     {
+        WeaponAnimator?.SetTrigger("Swing");
+
+        Debug.Log("Attack!");
         var weaponCamera = playerWeaponsManager.WeaponCamera;
         if (Physics.Raycast(weaponCamera.transform.position, weaponCamera.transform.forward, out RaycastHit hit, Range))
         {
