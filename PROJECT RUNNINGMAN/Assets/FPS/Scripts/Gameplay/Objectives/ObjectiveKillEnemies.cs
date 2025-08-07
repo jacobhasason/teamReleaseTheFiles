@@ -66,6 +66,18 @@ namespace Unity.FPS.Gameplay
             }
         }
 
+        public void SetRemainingEnemyCount(int remaining)
+        {
+            // This allows the wave spawner to update how many enemies are left.
+
+            if (MustKillAllEnemies)
+            {
+                KillsToCompleteObjective = remaining + m_KillTotal;
+                UpdateObjective(string.Empty, GetUpdatedCounterAmount(), "");
+            }
+        }
+
+
         string GetUpdatedCounterAmount()
         {
             return m_KillTotal + " / " + KillsToCompleteObjective;

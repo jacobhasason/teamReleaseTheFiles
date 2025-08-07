@@ -3,12 +3,14 @@ using Unity.FPS.Game;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using Unity.FPS.Gameplay;
 
 namespace Unity.FPS.AI
 {
     [RequireComponent(typeof(Health), typeof(Actor), typeof(NavMeshAgent))]
     public class EnemyController : MonoBehaviour
     {
+        
         [System.Serializable]
         public struct RendererIndexData
         {
@@ -21,6 +23,7 @@ namespace Unity.FPS.AI
                 MaterialIndex = index;
             }
         }
+        
 
         [Header("Parameters")]
         [Tooltip("The Y height at which the enemy will be automatically killed (if it falls off of the level)")]
@@ -34,6 +37,9 @@ namespace Unity.FPS.AI
 
         [Tooltip("Delay after death where the GameObject is destroyed (to allow for animation)")]
         public float DeathDuration = 0f;
+
+        [Tooltip("Start the next wave")]
+        public WaveSpawner waveSpawner;
 
 
         [Header("Weapons Parameters")] [Tooltip("Allow weapon swapping for this enemy")]
@@ -120,11 +126,16 @@ namespace Unity.FPS.AI
 
         void Start()
         {
+            
+
             m_EnemyManager = FindObjectOfType<EnemyManager>();
             DebugUtility.HandleErrorIfNullFindObject<EnemyManager, EnemyController>(m_EnemyManager, this);
 
             m_ActorsManager = FindObjectOfType<ActorsManager>();
             DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
+
+            waveSpawner = FindObjectOfType<WaveSpawner>();
+            DebugUtility.HandleErrorIfNullFindObject<WaveSpawner, EnemyController>(waveSpawner, this);
 
             m_EnemyManager.RegisterEnemy(this);
 
@@ -359,12 +370,17 @@ namespace Unity.FPS.AI
 
         void OnDie()
         {
+          
+            EventManager.Broadcast(new EnemyKillEvent());
+            waveSpawner.OnEnemyKilled();
+            
+
             // spawn a particle system when dying
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
 
-            // tells the game flow manager to handle the enemy destuction
-            m_EnemyManager.UnregisterEnemy(this);
+           /* // tells the game flow manager to handle the enemy destuction
+            m_EnemyManager.UnregisterEnemy(this);*/
 
             // loot an object
             if (TryDropItem())

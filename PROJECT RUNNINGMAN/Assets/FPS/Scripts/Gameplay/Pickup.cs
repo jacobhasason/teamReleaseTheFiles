@@ -54,12 +54,12 @@ namespace Unity.FPS.Gameplay
             if (m_isPicked)
                 return;
 
-            Debug.Log("Pickup trigger hit by: " + other.gameObject.name);
+            //Debug.Log("Pickup trigger hit by: " + other.gameObject.name);
 
             // Optional: filter by tag or layer first
             if (!other.CompareTag("Player"))
             {
-                Debug.Log("Ignored pickup trigger: not Player");
+                //Debug.Log("Ignored pickup trigger: not Player");
                 return;
             }
 
