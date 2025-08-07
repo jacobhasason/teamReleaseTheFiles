@@ -73,7 +73,8 @@ namespace Unity.FPS.Gameplay
 
             base.OnPicked(playerController);
 
-            Destroy(transform.root.gameObject);
+            Debug.Log("hi");
+            Destroy(gameObject);
             Debug.LogWarning("Destroyed.");
         }
 

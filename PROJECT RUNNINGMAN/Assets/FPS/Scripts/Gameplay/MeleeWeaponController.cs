@@ -7,8 +7,6 @@ public class MeleeWeaponController : WeaponController
     public float Damage = 40f;
     public float Range = 2f;
     public float AttackRate = 1f;
-    public Animator WeaponAnimator;
-
 
 
     float m_LastAttackTime;
@@ -17,8 +15,15 @@ public class MeleeWeaponController : WeaponController
 
     void Start()
     {
-        playerWeaponsManager = GetComponentInParent<PlayerWeaponsManager>();
+        playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
+
+        if(playerWeaponsManager == null)
+        Debug.LogError("PlayerWeaponsManager not found in parent!");
+
+        if (playerWeaponsManager?.WeaponCamera == null)
+            Debug.LogError("WeaponCamera not assigned in PlayerWeaponsManager!");
     }
+
 
     public override bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
     {
@@ -45,6 +50,5 @@ public class MeleeWeaponController : WeaponController
                 health.TakeDamage(Damage, gameObject);
             }
         }
-        // Play swing animation/sound here
     }
 }
