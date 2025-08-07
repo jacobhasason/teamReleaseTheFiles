@@ -52,11 +52,16 @@ namespace Unity.FPS.Gameplay
         void OnTriggerEnter(Collider other)
         {
             if (m_isPicked)
+                return;
+
+            //Debug.Log("Pickup trigger hit by: " + other.gameObject.name);
+
+            // Optional: filter by tag or layer first
+            if (!other.CompareTag("Player"))
             {
+                //Debug.Log("Ignored pickup trigger: not Player");
                 return;
             }
-
-            Debug.Log("Pickup trigger hit by: " + other.gameObject.name);
 
             var pickingPlayer = other.GetComponentInParent<PlayerCharacterController>();
             if (pickingPlayer != null)
@@ -74,6 +79,7 @@ namespace Unity.FPS.Gameplay
                 Debug.Log("No PlayerCharacterController found in parent of: " + other.gameObject.name);
             }
         }
+
 
 
 

@@ -22,17 +22,17 @@ namespace Unity.FPS.AI
             NumberOfEnemiesTotal++;
         }
 
-        public void UnregisterEnemy(EnemyController enemyKilled)
+        /*public void UnregisterEnemy(EnemyController enemyKilled)
         {
-            int enemiesRemainingNotification = NumberOfEnemiesRemaining - 1;
+            // int enemiesRemainingNotification = NumberOfEnemiesRemaining - 1;
 
             EnemyKillEvent evt = Events.EnemyKillEvent;
             evt.Enemy = enemyKilled.gameObject;
-            evt.RemainingEnemyCount = enemiesRemainingNotification;
+            // evt.RemainingEnemyCount = enemiesRemainingNotification;
             EventManager.Broadcast(evt);
 
             // removes the enemy from the list, so that we can keep track of how many are left on the map
             Enemies.Remove(enemyKilled);
-        }
+        }*/
     }
 }

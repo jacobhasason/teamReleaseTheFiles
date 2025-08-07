@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4670246568593848968}
   - component: {fileID: 2266939655453887825}
   - component: {fileID: 6514428951816767203}
+  - component: {fileID: 5179220304453659723}
   m_Layer: 10
   m_Name: MeleeWeapon_Bat
   m_TagString: Untagged
@@ -188,6 +189,28 @@ MonoBehaviour:
   Damage: 40
   Range: 2
   AttackRate: 1
+  WeaponAnimator: {fileID: 0}
+--- !u!95 &5179220304453659723
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4753831000562562256}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9269bc8c1158154469b543e4fffc8a82, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6868630207480719923
 GameObject:
   m_ObjectHideFlags: 0
