@@ -561,7 +561,7 @@ namespace Unity.FPS.Gameplay
             Debug.Log($"Switched to weapon: {newWeapon.name}");
             if (newWeapon != null)
             {
-                Debug.Log("Make it visable!");
+                //Debug.Log("Make it visable!");
                 newWeapon.ShowWeapon(true);
             }
         }
