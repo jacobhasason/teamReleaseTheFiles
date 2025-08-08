@@ -50,7 +50,7 @@ namespace Unity.FPS.Gameplay
 
                     if (newWeaponInstance != null)
                     {
-                        for (int i = 0; i < 9; i++)
+                        for (int i = 0; i < 3; i++)
                         {
                             if (weaponsManager.GetWeaponAtSlotIndex(i) == newWeaponInstance)
                             {
@@ -60,11 +60,26 @@ namespace Unity.FPS.Gameplay
                             }
                         }
                     }
+
+                    // Destroy pickup since weapon was added to hotbar
+                    Destroy(gameObject);
+                    Debug.LogWarning("Destroyed.");
                 }
                 else
                 {
                     Debug.LogWarning("Weapon was NOT added (already owned or no slot free).");
+
+                    // store in inventory (future system)
+                   /* var inventory = playerController.GetComponent<InventoryManager>();
+                    if (inventory != null)
+                    {
+                        inventory.AddToInventory(WeaponPrefab);
+                    }*/
+
+                    // Do NOT destroy the pickup if hotbar is full
+                    Debug.Log("Pickup not destroyed, may be stored in inventory later.");
                 }
+
             }
             else
             {
@@ -72,10 +87,6 @@ namespace Unity.FPS.Gameplay
             }
 
             base.OnPicked(playerController);
-
-            Debug.Log("hi");
-            Destroy(gameObject);
-            Debug.LogWarning("Destroyed.");
         }
 
 
