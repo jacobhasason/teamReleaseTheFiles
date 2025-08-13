@@ -1389,11 +1389,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2532758510805433163, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: fa2da21c65c10154382de11df789cee9, type: 2}
     - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
       propertyPath: ShootSfx
       value: 
       objectReference: {fileID: 8300000, guid: ef980d09b569380459e609fe90ef1db2, type: 3}
+    - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: SwingSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
+    - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: AttackRate
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
       propertyPath: WeaponIcon
@@ -1402,9 +1417,25 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
+      propertyPath: HitSoundSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
+    - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: ToneSoundSfx
+      value: 
+      objectReference: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
+    - target: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
       propertyPath: ChangeWeaponSfx
       value: 
       objectReference: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
+    - target: {fileID: 4664665653477612434, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000,
+        type: 0}
     - target: {fileID: 4664665653477612434, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
       propertyPath: m_Name
@@ -1465,16 +1496,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8380272831102896151, guid: 38b0827cdef3b6e4687c571b94989ce0,
-        type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
     - target: {fileID: 9011381941810634250, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
       propertyPath: PickupSfx
       value: 
-      objectReference: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
+      objectReference: {fileID: 8300000, guid: d0f1afed8fa916244af6ca73579ded67, type: 3}
+    - target: {fileID: 9011381941810634250, guid: 38b0827cdef3b6e4687c571b94989ce0,
+        type: 3}
+      propertyPath: WeaponPrefab
+      value: 
+      objectReference: {fileID: 1822961932}
     - target: {fileID: 9011381941810634250, guid: 38b0827cdef3b6e4687c571b94989ce0,
         type: 3}
       propertyPath: BobbingAmount
@@ -1734,6 +1765,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2729281213873661534}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1822961932 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3557450886766822309, guid: 38b0827cdef3b6e4687c571b94989ce0,
+    type: 3}
+  m_PrefabInstance: {fileID: 1452898664}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36cabf00d5edc1c4092a33213655ab97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1880561205 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5963937743390997973, guid: 7042f8fe21debc944b5bdc894f478d63,
