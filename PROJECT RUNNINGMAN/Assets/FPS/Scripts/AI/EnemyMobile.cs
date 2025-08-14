@@ -11,6 +11,7 @@ namespace Unity.FPS.AI
             Patrol,
             Follow,
             Attack,
+            Knockback,
         }
 
         public Animator Animator;
@@ -31,11 +32,18 @@ namespace Unity.FPS.AI
         public AIState AiState { get; private set; }
         EnemyController m_EnemyController;
         AudioSource m_AudioSource;
+        Transform m_Transform;
+        [Tooltip("How long the enemy can be knocked back")]
+        [Range(0f, 5f)]
+        public float KBLimit = 1f;
+
+        private float KBTime = 0f;
 
         const string k_AnimMoveSpeedParameter = "MoveSpeed";
         const string k_AnimAttackParameter = "Attack";
         const string k_AnimAlertedParameter = "Alerted";
         const string k_AnimOnDamagedParameter = "OnDamaged";
+        const string k_AnimOnKnockbackParameter = "OnKnockback";
 
         void Start()
         {
@@ -48,12 +56,14 @@ namespace Unity.FPS.AI
             m_EnemyController.onLostTarget += OnLostTarget;
             m_EnemyController.SetPathDestinationToClosestNode();
             m_EnemyController.onDamaged += OnDamaged;
+            m_EnemyController.onKnockback += OnKnockback;
 
             // Start patrolling
             AiState = AIState.Patrol;
 
             // adding a audio source to play the movement sound on it
             m_AudioSource = GetComponent<AudioSource>();
+            m_Transform =  GetComponent<Transform>();
             DebugUtility.HandleErrorIfNullGetComponent<AudioSource, EnemyMobile>(m_AudioSource, this, gameObject);
             m_AudioSource.clip = MovementSound;
             m_AudioSource.Play();
@@ -96,6 +106,13 @@ namespace Unity.FPS.AI
                     }
 
                     break;
+                case AIState.Knockback:
+                    if (Time.time - KBTime > KBLimit)
+                    {
+                        AiState = AIState.Follow;
+                    }
+
+                    break;
             }
         }
 
@@ -127,6 +144,12 @@ namespace Unity.FPS.AI
 
                     m_EnemyController.OrientTowards(m_EnemyController.KnownDetectedTarget.transform.position);
                     m_EnemyController.TryAtack(m_EnemyController.KnownDetectedTarget.transform.position);
+                    break;
+                case AIState.Knockback:
+                    if (Time.time - KBTime <= KBLimit)
+                    {
+                        m_Transform.position += m_EnemyController.PositionDifferential * Time.deltaTime;
+                    }
                     break;
             }
         }
@@ -180,6 +203,17 @@ namespace Unity.FPS.AI
             }
 
             Animator.SetTrigger(k_AnimOnDamagedParameter);
+        }
+        void OnKnockback()
+        {
+            if (RandomHitSparks.Length > 0)
+            {
+                int n = Random.Range(0, RandomHitSparks.Length - 1);
+                RandomHitSparks[n].Play();
+            }
+            KBTime = Time.time;
+            Animator.SetTrigger(k_AnimOnKnockbackParameter);
+            AiState = AIState.Knockback;
         }
     }
 }

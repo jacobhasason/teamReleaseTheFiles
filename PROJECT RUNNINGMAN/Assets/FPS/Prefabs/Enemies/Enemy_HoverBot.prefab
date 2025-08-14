@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 9087143436424816424}
   - component: {fileID: 4752156053906186385}
   - component: {fileID: 6370966072896210225}
+  - component: {fileID: 6611687052074177972}
   - component: {fileID: 3464315327790461765}
   - component: {fileID: 7406548990343174644}
   - component: {fileID: 6449686686394465367}
@@ -112,6 +113,7 @@ MonoBehaviour:
   PathReachingRadius: 2
   OrientationSpeed: 10
   DeathDuration: 0
+  waveSpawner: {fileID: 0}
   SwapToNextWeapon: 0
   DelayAfterWeaponSwap: 0
   EyeColorMaterial: {fileID: 2100000, guid: e6fdfd4e017234d43ac116abee8fa90a, type: 2}
@@ -200,6 +202,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 100
   CriticalHealthRatio: 0.3
+--- !u!114 &6611687052074177972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015434656898269652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fffcbe2e07f5f5d42b7900983dcd59eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxHealth: 100
+  CriticalHealthRatio: 0.1
 --- !u!114 &3464315327790461765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -679,6 +695,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 788040023
   m_SortingOrder: 0
@@ -1741,6 +1758,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ColorModule.gradient.maxGradient.m_NumColorKeys
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7951582856014658560, guid: 3f5b545b9a1e74c418b061bba5bb9e2c,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f5b545b9a1e74c418b061bba5bb9e2c, type: 3}
