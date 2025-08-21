@@ -42,6 +42,9 @@ namespace Unity.FPS.AI
         [Tooltip("Start the next wave")]
         public WaveSpawner waveSpawner;
 
+        [Tooltip("Weapon")]
+        public MeleeWeaponController meleeWeapon;
+
 
         [Header("Weapons Parameters")] [Tooltip("Allow weapon swapping for this enemy")]
         public bool SwapToNextWeapon = false;
@@ -233,6 +236,12 @@ namespace Unity.FPS.AI
                 data.Renderer.SetPropertyBlock(m_BodyFlashMaterialPropertyBlock, data.MaterialIndex);
             }
 
+            if (IsTargetInAttackRange && KnownDetectedTarget != null)
+            {
+                GetComponent<Animator>().SetTrigger("Swing");
+                TryAttack(KnownDetectedTarget.transform.position);
+            }
+
             m_WasDamagedThisFrame = false;
         }
 
@@ -376,6 +385,7 @@ namespace Unity.FPS.AI
                 m_WasDamagedThisFrame = true;
             }
         }
+
         void OnKnockback(float damage, GameObject damageSource)
         {
             // test if the damage source is the player
@@ -390,6 +400,7 @@ namespace Unity.FPS.AI
                 m_WasDamagedThisFrame = true;
             }
         }
+
         void OnDie()
         {
           
@@ -442,12 +453,15 @@ namespace Unity.FPS.AI
             }
         }
 
-        public bool TryAtack(Vector3 enemyPosition)
+        public bool TryAttack(Vector3 enemyPosition)
         {
+            
             if (m_GameFlowManager.GameIsEnding)
                 return false;
 
             OrientWeaponsTowards(enemyPosition);
+
+            Debug.Log("Attempted Attack!");
 
             if ((m_LastTimeWeaponSwapped + DelayAfterWeaponSwap) >= Time.time)
                 return false;
