@@ -47,8 +47,14 @@ public class EnemyAI : MonoBehaviour
     public float DropRate = 1f;
     public float DeathDuration = 0f; // Delay before destroying enemy
 
+    [Header("Drops")]
+    [SerializeField] private GameObject audiencePickupPrefab;
+    [SerializeField] private GameObject corporatePickupPrefab;
+
 
     private bool IsDead => health.CurrentHealth <= 0;
+
+    public CurrencyManager currencyManager;
 
     [Header("Audio")]
     public AudioClip HitSFX;
@@ -204,10 +210,10 @@ public class EnemyAI : MonoBehaviour
 
         // Drop loot
         if (LootPrefab != null && Random.value <= DropRate)
-            Instantiate(LootPrefab, transform.position, Quaternion.identity);
-
-        // Destroy enemy after a delay
-        Destroy(gameObject, DeathDuration);
+            Instantiate(audiencePickupPrefab, transform.position, Quaternion.identity);
+    
+    // Destroy enemy after a delay
+    Destroy(gameObject, DeathDuration);
     }
 
 

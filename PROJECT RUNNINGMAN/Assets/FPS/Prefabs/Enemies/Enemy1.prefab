@@ -193,10 +193,15 @@ MonoBehaviour:
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
-  LootPrefab: {fileID: 2529580269645609534, guid: 9973c412032becb4ca116ca08be62edf,
+  LootPrefab: {fileID: 5444484267455682382, guid: 753779c1aae0ebc4081c2189cdf6664f,
     type: 3}
   DropRate: 1
   DeathDuration: 0
+  audiencePickupPrefab: {fileID: 217277530234908594, guid: 1459ce936c819e74c986176050881a18,
+    type: 3}
+  corporatePickupPrefab: {fileID: 7825903155294947248, guid: 3ff8e3510a804a24ba46ed3f56e77e33,
+    type: 3}
+  currencyManager: {fileID: 0}
   HitSFX: {fileID: 8300000, guid: 53d2238f4c4b2aa4f8e559c7af9e0126, type: 3}
 --- !u!195 &334220005847167942
 NavMeshAgent:
