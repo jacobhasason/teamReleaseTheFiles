@@ -143,7 +143,7 @@ namespace Unity.FPS.AI
                     }
 
                     m_EnemyController.OrientTowards(m_EnemyController.KnownDetectedTarget.transform.position);
-                    m_EnemyController.TryAtack(m_EnemyController.KnownDetectedTarget.transform.position);
+                    m_EnemyController.TryAttack(m_EnemyController.KnownDetectedTarget.transform.position);
                     break;
                 case AIState.Knockback:
                     if (Time.time - KBTime <= KBLimit)

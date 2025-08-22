@@ -95,7 +95,7 @@ namespace Unity.FPS.AI
                             (m_PivotAimingRotation * Quaternion.Inverse(m_RotationWeaponForwardToPivot)) *
                             Vector3.forward;
 
-                        m_EnemyController.TryAtack(TurretAimPoint.position + correctedDirectionToTarget);
+                        m_EnemyController.TryAttack(TurretAimPoint.position + correctedDirectionToTarget);
                     }
 
                     break;
