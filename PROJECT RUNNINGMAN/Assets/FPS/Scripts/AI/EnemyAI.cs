@@ -47,8 +47,14 @@ public class EnemyAI : MonoBehaviour
     public float DropRate = 1f;
     public float DeathDuration = 0f; // Delay before destroying enemy
 
+    [Header("Drops")]
+    [SerializeField] private GameObject audiencePickupPrefab;
+    [SerializeField] private GameObject corporatePickupPrefab;
+
 
     private bool IsDead => health.CurrentHealth <= 0;
+
+    public CurrencyManager currencyManager;
 
     [Header("Audio")]
     public AudioClip HitSFX;
@@ -162,25 +168,28 @@ public class EnemyAI : MonoBehaviour
         {
             lastAttackTime = Time.time;
 
-            // Aim slightly higher to hit player collider (optional)
-            Vector3 targetPoint = player.position + Vector3.up * 1f;
-            Vector3 dirToPlayer = (player.position - headTransform.position).normalized;
-            if (Vector3.Dot(dirToPlayer, transform.forward) < 0f)
-            {
-                // Enemy is facing away; force it forward
-                dirToPlayer = transform.forward;
-            }
+            // Aim slightly higher (toward chest height)
+            Vector3 targetPoint = player.position + Vector3.up * 1.0f;
+            Vector3 dirToPlayer = (targetPoint - headTransform.position).normalized;
 
-            // DEBUG: Draw the attack ray in the Scene view for 1 second
+            // Debug ray so you can see in Scene view where it's aiming
             Debug.DrawRay(headTransform.position, dirToPlayer * meleeWeapon.Range, Color.red, 1f);
-
-            // DEBUG: Log attack attempt and distance
             Debug.Log($"Enemy attacking player. Distance: {distance}, Dir: {dirToPlayer}");
 
-            // Perform the melee attack
+            if (Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, meleeWeapon.Range))
+            {
+                var health = hit.collider.GetComponentInParent<Health>();
+                if (health != null)
+                {
+                    health.TakeDamage(meleeWeapon.Damage, gameObject);
+                }
+            }
+
+            // Perform the melee attack animation/audio/etc
             meleeWeapon.PerformAttack(headTransform, dirToPlayer);
         }
     }
+
 
 
     public void OnDamaged(float damage)
@@ -201,10 +210,10 @@ public class EnemyAI : MonoBehaviour
 
         // Drop loot
         if (LootPrefab != null && Random.value <= DropRate)
-            Instantiate(LootPrefab, transform.position, Quaternion.identity);
-
-        // Destroy enemy after a delay
-        Destroy(gameObject, DeathDuration);
+            Instantiate(audiencePickupPrefab, transform.position, Quaternion.identity);
+    
+    // Destroy enemy after a delay
+    Destroy(gameObject, DeathDuration);
     }
 
 
