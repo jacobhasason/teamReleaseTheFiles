@@ -23,6 +23,7 @@ namespace Unity.FPS.Gameplay
         GameFlowManager m_GameFlowManager;
         PlayerCharacterController m_PlayerCharacterController;
         bool m_FireInputWasHeld;
+        public bool allowInput = true;
 
         void Start()
         {
@@ -43,7 +44,10 @@ namespace Unity.FPS.Gameplay
 
         public bool CanProcessInput()
         {
-            return Cursor.lockState == CursorLockMode.Locked && !m_GameFlowManager.GameIsEnding;
+            // Existing checks + wave pause
+            return Cursor.lockState == CursorLockMode.Locked
+                   && !m_GameFlowManager.GameIsEnding
+                   && allowInput;  // prevents input during pause
         }
 
         public Vector3 GetMoveInput()
@@ -263,5 +267,7 @@ namespace Unity.FPS.Gameplay
 
             return 0f;
         }
+
+
     }
 }

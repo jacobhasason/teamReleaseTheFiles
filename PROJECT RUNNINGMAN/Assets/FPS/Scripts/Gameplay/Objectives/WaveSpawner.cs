@@ -1,100 +1,124 @@
+using System.Collections;
 using UnityEngine;
 using Unity.FPS.Game;
-using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
+using Unity.FPS.Gameplay;
 
-namespace Unity.FPS.Gameplay
+public class WaveSpawner : MonoBehaviour
 {
-    public class WaveSpawner : MonoBehaviour
+    [Header("Enemy Settings")]
+    public GameObject EnemyPrefab;
+    public Transform[] SpawnPoints;
+
+    [Header("Wave Settings")]
+    public int MaxEnemiesPerWave = 20;
+    public float TimeBetweenWaves = 3f;
+
+    [Header("Player")]
+    public MonoBehaviour playerController; // drag  player movement script here
+
+    [Header("UI & Feedback")]
+    public DisplayMessageEvent waveMessageEvent;
+
+    private int waveCount = 0;
+    private int enemiesAlive = 0;
+    private bool isWaitingBetweenWaves = false;
+    public WaveRewardMenuController waveRewardMenu;
+
+    public PlayerInputHandler playerInputHandler;
+
+    void Start()
     {
-        public GameObject EnemyPrefab;
-        public Transform[] SpawnPoints;
-        public int MaxEnemies = 20;
-        public float SpawnDelay = 2f;
-        public float TimeBetweenWaves = 3f;
+        StartCoroutine(StartNextWaveWithDelay());
+    }
 
-        private int enemiesSpawned = 0;
-        private int enemiesAlive = 0;
-        private int waveCount = 0;
-        private bool waitingForNextWave = false;
+    // Called whenever an enemy dies
+    public void OnEnemyKilled()
+    {
+        enemiesAlive--;
+        Debug.Log($"Enemy killed. Remaining alive: {enemiesAlive}");
 
-        ObjectiveKillEnemies killObjective;
 
-        void Start()
+        // If all enemies are killed display the wave reward menu
+        if (enemiesAlive <= 0 && !isWaitingBetweenWaves)
         {
-            killObjective = FindObjectOfType<ObjectiveKillEnemies>();
-            StartCoroutine(StartNextWaveWithDelay());
+            StartCoroutine(PauseBetweenWaves());
+        }
+    }
+
+    IEnumerator PauseBetweenWaves()
+    {
+        isWaitingBetweenWaves = true;
+
+        if (playerInputHandler != null)
+            playerInputHandler.allowInput = false;
+
+        // Show the reward menu
+        if (waveRewardMenu != null)
+        {
+            waveRewardMenu.SetupMenu();
+            Debug.Log("Menu Opened!");
         }
 
-        void RegisterEnemy(GameObject enemy)
+        // Wait until the player closes the menu
+        while (!waveRewardMenu.MenuClosed)
+            yield return null;
+
+        // Resume player movement
+        if (playerInputHandler != null)
+            playerInputHandler.allowInput = true;
+
+        isWaitingBetweenWaves = false;
+
+        SpawnNextWave();
+    }
+
+
+    IEnumerator StartNextWaveWithDelay()
+    {
+        yield return new WaitForSeconds(TimeBetweenWaves);
+        SpawnNextWave();
+    }
+
+    public void SpawnNextWave()
+    {
+        waveCount++;
+        if (waveMessageEvent != null)
         {
+            waveMessageEvent.Message = $"Wave {waveCount} Completed!";
+            waveMessageEvent.DelayBeforeDisplay = 0f;
+            EventManager.Broadcast(waveMessageEvent);
+        }
+
+        int enemiesToSpawn = Mathf.Min(waveCount, MaxEnemiesPerWave);
+        enemiesAlive = enemiesToSpawn;
+
+        Debug.Log($"Spawning Wave {waveCount} with {enemiesAlive} enemies.");
+
+        for (int i = 0; i < enemiesToSpawn; i++)
+        {
+            Transform spawnPoint = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
+            GameObject enemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+
+            // Make sure each enemy notifies the manager when it dies
             var health = enemy.GetComponent<Health>();
-
-            // Defensive: avoid double-calling on death
-            bool hasDied = false;
-
-            enemiesAlive++;
-            Debug.Log($"[WaveSpawner] Enemy registered. enemiesAlive = {enemiesAlive}");
-
-            health.OnDie += () =>
+            if (health != null)
             {
-                if (hasDied) return;
-                hasDied = true;
-
-                enemiesAlive--;
-
-                EventManager.Broadcast(new EnemyKillEvent());
-                OnEnemyKilled();
-            };
-        }
-
-
-        public void OnEnemyKilled()
-        {
-            
-            Debug.Log($"Enemy killed. Remaining alive: {enemiesAlive}");
-
-            // Check after a slight delay to allow deaths to register cleanly
-            if (enemiesAlive <= 0 && !waitingForNextWave && enemiesSpawned < MaxEnemies)
-            {
-                waitingForNextWave = true;
-                StartCoroutine(StartNextWaveWithDelay());
+                bool hasDied = false;
+                health.OnDie += () =>
+                {
+                    if (hasDied) return;
+                    hasDied = true;
+                    OnEnemyKilled();
+                };
             }
         }
 
-        IEnumerator StartNextWaveWithDelay()
+        // Optional: show UI message about wave starting
+        if (waveMessageEvent != null)
         {
-            yield return new WaitForSeconds(TimeBetweenWaves);
-            SpawnNextWave();
-        }
-
-        void SpawnNextWave()
-        {
-            waveCount++;
-            waitingForNextWave = false;
-
-            enemiesSpawned = waveCount;
-
-            Debug.Log($"Spawning Wave {waveCount} with {enemiesSpawned} enemies");
-
-            for (int i = 0; i < enemiesSpawned; i++)
-            {
-                Transform spawnPoint = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
-                GameObject enemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
-                RegisterEnemy(enemy);
-            }
-
-            // Broadcast wave message
-            DisplayMessageEvent waveMessage = Events.DisplayMessageEvent;
-            waveMessage.Message = $"Wave {waveCount} Started!";
-            waveMessage.DelayBeforeDisplay = 0f;
-            EventManager.Broadcast(waveMessage);
-
-            if (killObjective != null)
-            {
-                killObjective.SetRemainingEnemyCount(enemiesAlive);
-            }
+            waveMessageEvent.Message = $"Wave {waveCount} Started!";
+            waveMessageEvent.DelayBeforeDisplay = 0f;
+            EventManager.Broadcast(waveMessageEvent);
         }
     }
 }
