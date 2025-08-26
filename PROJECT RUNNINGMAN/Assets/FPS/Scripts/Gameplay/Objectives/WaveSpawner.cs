@@ -23,6 +23,7 @@ namespace Unity.FPS.Gameplay
 
         void Start()
         {
+
             killObjective = FindObjectOfType<ObjectiveKillEnemies>();
             StartCoroutine(StartNextWaveWithDelay());
         }
