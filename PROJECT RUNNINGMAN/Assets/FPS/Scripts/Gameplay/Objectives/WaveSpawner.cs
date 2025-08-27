@@ -1,7 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using Unity.FPS.Game;
+using UnityEngine.UI;
 using Unity.FPS.Gameplay;
+
+using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -22,13 +26,16 @@ public class WaveSpawner : MonoBehaviour
     private int waveCount = 0;
     private int enemiesAlive = 0;
     private bool isWaitingBetweenWaves = false;
-    public WaveRewardMenuController waveRewardMenu;
+  
 
     public PlayerInputHandler playerInputHandler;
+    public EventSystem gameplayEventSystem; // assign your main EventSystem here
+    public UIManager mainUIManager;
+
 
     void Start()
     {
-        StartCoroutine(StartNextWaveWithDelay());
+        SpawnNextWave();
     }
 
     // Called whenever an enemy dies
@@ -41,41 +48,62 @@ public class WaveSpawner : MonoBehaviour
         // If all enemies are killed display the wave reward menu
         if (enemiesAlive <= 0 && !isWaitingBetweenWaves)
         {
-            StartCoroutine(PauseBetweenWaves());
+            OnWaveCompleted();
         }
     }
 
-    IEnumerator PauseBetweenWaves()
+    // Called when a wave is finished
+    public void OnWaveCompleted()
     {
-        isWaitingBetweenWaves = true;
+        Debug.Log("Wave completed! Loading reward menu...");
 
-        if (playerInputHandler != null)
-            playerInputHandler.allowInput = false;
+        // Find reference back to the main scene’s manager
+        mainUIManager = FindObjectOfType<UIManager>();
 
-        // Show the reward menu
-        if (waveRewardMenu != null)
+        // Disable the main scene UI while this menu is active
+        if (mainUIManager != null)
         {
-            waveRewardMenu.SetupMenu();
-            Debug.Log("Menu Opened!");
+            mainUIManager.DisableMainUI();
         }
 
-        // Wait until the player closes the menu
-        while (!waveRewardMenu.MenuClosed)
-            yield return null;
+        // Freeze gameplay
+        Time.timeScale = 0f;
+        if (playerInputHandler != null)
+        {
+            playerInputHandler.allowInput = false;
+        }
 
-        // Resume player movement
+        // Disable main EventSystem
+        if (gameplayEventSystem != null)
+        {
+            gameplayEventSystem.gameObject.SetActive(false);
+        }
+            
+        // Load reward menu additively
+        SceneManager.LoadScene("LoadoutMenu", LoadSceneMode.Additive);
+    }
+
+    public void OnRewardSelected()
+    {
+        Debug.Log("Reward selected, closing reward menu...");
+
+        SceneManager.UnloadSceneAsync("LoadoutMenu");
+
+        // Resume gameplay
+        Time.timeScale = 1f;
         if (playerInputHandler != null)
             playerInputHandler.allowInput = true;
 
-        isWaitingBetweenWaves = false;
+        // Re-enable main EventSystem
+        if (gameplayEventSystem != null)
+        {
+            gameplayEventSystem.gameObject.SetActive(true);
+        }
 
-        SpawnNextWave();
-    }
+        // Re-enable the main scene UI
+        if (mainUIManager != null)
+            mainUIManager.EnableMainUI();
 
-
-    IEnumerator StartNextWaveWithDelay()
-    {
-        yield return new WaitForSeconds(TimeBetweenWaves);
         SpawnNextWave();
     }
 

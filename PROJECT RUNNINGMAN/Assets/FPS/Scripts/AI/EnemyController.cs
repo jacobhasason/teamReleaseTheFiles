@@ -40,7 +40,7 @@ namespace Unity.FPS.AI
         public float DeathDuration = 0f;
 
         [Tooltip("Start the next wave")]
-        public WaveSpawner waveSpawner;
+        public WaveManager waveManager;
 
         [Tooltip("Weapon")]
         public MeleeWeaponController meleeWeapon;
@@ -143,8 +143,8 @@ namespace Unity.FPS.AI
             m_ActorsManager = FindObjectOfType<ActorsManager>();
             DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
 
-            waveSpawner = FindObjectOfType<WaveSpawner>();
-            DebugUtility.HandleErrorIfNullFindObject<WaveSpawner, EnemyController>(waveSpawner, this);
+            waveManager = FindObjectOfType<WaveManager>();
+            DebugUtility.HandleErrorIfNullFindObject<WaveManager, EnemyController>(waveManager, this);
 
             m_EnemyManager.RegisterEnemy(this);
 
@@ -405,7 +405,7 @@ namespace Unity.FPS.AI
         {
           
             EventManager.Broadcast(new EnemyKillEvent());
-            waveSpawner.OnEnemyKilled();
+            waveManager.OnEnemyKilled();
             
 
             // spawn a particle system when dying
