@@ -3,6 +3,8 @@ using UnityEngine;
 using Unity.FPS.Game;
 using UnityEngine.UI;
 using Unity.FPS.Gameplay;
+using Unity.FPS.UI;
+
 
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -15,13 +17,13 @@ public class WaveSpawner : MonoBehaviour
 
     [Header("Wave Settings")]
     public int MaxEnemiesPerWave = 20;
-    public float TimeBetweenWaves = 3f;
+    public float TimeBetweenWaves = 5f;
 
     [Header("Player")]
     public MonoBehaviour playerController; // drag  player movement script here
 
     [Header("UI & Feedback")]
-    public DisplayMessageEvent waveMessageEvent;
+    public DisplayMessage waveMessageManager;
 
     private int waveCount = 0;
     private int enemiesAlive = 0;
@@ -30,8 +32,9 @@ public class WaveSpawner : MonoBehaviour
 
     public PlayerInputHandler playerInputHandler;
     public EventSystem gameplayEventSystem; // assign your main EventSystem here
-    public UIManager mainUIManager;
-
+    private UIManager mainUIManager;
+    public InGameMenuManager inGameMenuManager;
+    public MenuNavigation menuNavigation;
 
     void Start()
     {
@@ -56,15 +59,7 @@ public class WaveSpawner : MonoBehaviour
     public void OnWaveCompleted()
     {
         Debug.Log("Wave completed! Loading reward menu...");
-
-        // Find reference back to the main scene’s manager
-        mainUIManager = FindObjectOfType<UIManager>();
-
-        // Disable the main scene UI while this menu is active
-        if (mainUIManager != null)
-        {
-            mainUIManager.DisableMainUI();
-        }
+        InGameMenuManager.BlockInput = true;
 
         // Freeze gameplay
         Time.timeScale = 0f;
@@ -78,7 +73,7 @@ public class WaveSpawner : MonoBehaviour
         {
             gameplayEventSystem.gameObject.SetActive(false);
         }
-            
+
         // Load reward menu additively
         SceneManager.LoadScene("LoadoutMenu", LoadSceneMode.Additive);
     }
@@ -86,23 +81,26 @@ public class WaveSpawner : MonoBehaviour
     public void OnRewardSelected()
     {
         Debug.Log("Reward selected, closing reward menu...");
-
         SceneManager.UnloadSceneAsync("LoadoutMenu");
+
+        InGameMenuManager.BlockInput = false;
+
 
         // Resume gameplay
         Time.timeScale = 1f;
         if (playerInputHandler != null)
+        {
             playerInputHandler.allowInput = true;
+            Debug.Log("Player Movement Enabled");
+        }
 
         // Re-enable main EventSystem
         if (gameplayEventSystem != null)
         {
             gameplayEventSystem.gameObject.SetActive(true);
-        }
+            Debug.Log("Event System Enabled");
 
-        // Re-enable the main scene UI
-        if (mainUIManager != null)
-            mainUIManager.EnableMainUI();
+        }
 
         SpawnNextWave();
     }
@@ -110,13 +108,28 @@ public class WaveSpawner : MonoBehaviour
     public void SpawnNextWave()
     {
         waveCount++;
-        if (waveMessageEvent != null)
+        StartCoroutine(SpawnWaveCoroutine());
+    }
+
+    private IEnumerator SpawnWaveCoroutine()
+    {
+        // 1? Show "Get Ready!"
+        if (waveMessageManager != null)
         {
-            waveMessageEvent.Message = $"Wave {waveCount} Completed!";
-            waveMessageEvent.DelayBeforeDisplay = 0f;
-            EventManager.Broadcast(waveMessageEvent);
+            waveMessageManager.ShowMessage("Get Ready!", 1.5f);
         }
 
+        yield return new WaitForSeconds(1.5f);
+
+        // 2? Show wave number
+        if (waveMessageManager != null)
+        {
+            waveMessageManager.ShowMessage($"Wave {waveCount} Started!", 2f);
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
+        // 3? Spawn enemies one by one
         int enemiesToSpawn = Mathf.Min(waveCount, MaxEnemiesPerWave);
         enemiesAlive = enemiesToSpawn;
 
@@ -127,7 +140,6 @@ public class WaveSpawner : MonoBehaviour
             Transform spawnPoint = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
             GameObject enemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
 
-            // Make sure each enemy notifies the manager when it dies
             var health = enemy.GetComponent<Health>();
             if (health != null)
             {
@@ -139,14 +151,10 @@ public class WaveSpawner : MonoBehaviour
                     OnEnemyKilled();
                 };
             }
-        }
 
-        // Optional: show UI message about wave starting
-        if (waveMessageEvent != null)
-        {
-            waveMessageEvent.Message = $"Wave {waveCount} Started!";
-            waveMessageEvent.DelayBeforeDisplay = 0f;
-            EventManager.Broadcast(waveMessageEvent);
+            yield return new WaitForSeconds(0.2f);
         }
     }
+
+
 }

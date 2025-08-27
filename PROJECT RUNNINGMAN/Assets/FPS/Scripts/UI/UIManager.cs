@@ -19,9 +19,17 @@ public class UIManager : MonoBehaviour
 
     public void EnableMainUI()
     {
-        foreach (var c in mainSceneCanvases)
+   
+        if (mainSceneCanvases != null)
+            {
+                foreach (var c in mainSceneCanvases)
+                {
+                    c.gameObject.SetActive(true);
+                }
+        }
+        else
         {
-            c.gameObject.SetActive(true);
+            Debug.LogWarning("Main UI canvas is missing, cannot re-enable!");
         }
     }
 }
