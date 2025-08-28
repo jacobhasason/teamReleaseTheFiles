@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Unity.FPS.Game;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace Unity.FPS.Gameplay
