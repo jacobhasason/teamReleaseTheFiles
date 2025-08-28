@@ -44,7 +44,7 @@ public class DisplayMessage : MonoBehaviour
 }
 
 
-    void Update()
+   /* void Update()
     {
         if (m_WasDisplayed)
             return;
@@ -62,7 +62,7 @@ public class DisplayMessage : MonoBehaviour
 
             m_WasDisplayed = true;
         }
-    }
+    }*/
 
     public void ShowMessage(string text, float duration)
     {

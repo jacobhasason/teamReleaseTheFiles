@@ -34,7 +34,7 @@ public class WaveSpawner : MonoBehaviour
     public EventSystem gameplayEventSystem; // assign your main EventSystem here
     private UIManager mainUIManager;
     public InGameMenuManager inGameMenuManager;
-    public MenuNavigation menuNavigation;
+    //public MenuNavigation menuNavigation;
 
     void Start()
     {
@@ -113,23 +113,15 @@ public class WaveSpawner : MonoBehaviour
 
     private IEnumerator SpawnWaveCoroutine()
     {
-        // 1? Show "Get Ready!"
-        if (waveMessageManager != null)
-        {
-            waveMessageManager.ShowMessage("Get Ready!", 1.5f);
-        }
+        // Broadcast wave message
+        DisplayMessageEvent waveMessage = Events.DisplayMessageEvent;
+        waveMessage.Message = $"Wave {waveCount} Started!";
+        waveMessage.DelayBeforeDisplay = 0f;
+        EventManager.Broadcast(waveMessage);
 
         yield return new WaitForSeconds(1.5f);
 
-        // 2? Show wave number
-        if (waveMessageManager != null)
-        {
-            waveMessageManager.ShowMessage($"Wave {waveCount} Started!", 2f);
-        }
-
-        yield return new WaitForSeconds(1.5f);
-
-        // 3? Spawn enemies one by one
+        // Spawn enemies one by one
         int enemiesToSpawn = Mathf.Min(waveCount, MaxEnemiesPerWave);
         enemiesAlive = enemiesToSpawn;
 

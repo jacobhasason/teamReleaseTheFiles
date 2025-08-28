@@ -601,7 +601,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000030517578, y: 31.700012}
+  m_AnchoredPosition: {x: 0.000030517578, y: 104}
   m_SizeDelta: {x: 643.8, y: 304.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &628827678
@@ -741,7 +741,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -86.80108, y: -185.98601}
+  m_AnchoredPosition: {x: -120, y: -185.98601}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &787399818
@@ -1222,7 +1222,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 138.62602, y: -185.98601}
+  m_AnchoredPosition: {x: 119, y: -185.98601}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1056382950
@@ -1507,7 +1507,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -315.0199, y: -188.07973}
+  m_AnchoredPosition: {x: -369, y: -188.07973}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &1676876387
@@ -1943,14 +1943,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.93118024, b: 1, a: 1}
+  m_Color: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 48c0e96ebfb39ae468590e4983df332d, type: 3}
+  m_Texture: {fileID: 0}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -2119,6 +2119,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7430880acad1a7f4bb1eeefd1253996d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponPrefabs:
+  - {fileID: 4664665653477612434, guid: 38b0827cdef3b6e4687c571b94989ce0, type: 3}
+  - {fileID: 2225486910712267859, guid: b318fabc73446b746a1005cede0c4ceb, type: 3}
+  - {fileID: 2225486910712267859, guid: 3439b4874b7b44e4eb2216314c46b85c, type: 3}
+  - {fileID: 2225486910712267859, guid: 31d97e822763d1f4cb769f7e3f7f7333, type: 3}
+  waveSpawner: {fileID: 0}
 --- !u!225 &1906286934
 CanvasGroup:
   m_ObjectHideFlags: 0
