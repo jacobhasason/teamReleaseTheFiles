@@ -60,14 +60,15 @@ public class CurrencyManager : MonoBehaviour
     }
 
     // Query total of a given type
-    public int GetCurrency(CurrencyType type)
+    public int GetCurrency(string type)
     {
-        return type switch
-        {
-            CurrencyType.AudienceFavor => AudienceFavor,
-            CurrencyType.CorporateFavor => CorporateFavor,
-            _ => 0
-        };
+        if (type == "AudienceFavor") {
+            return AudienceFavor;
+        } else if (type == "CorporateFavor") {
+            return CorporateFavor;
+        } else {
+            return 0;
+        }
     }
 
    /* public void UnlockCorporateSponsorship()
