@@ -198,6 +198,17 @@ PrefabInstance:
       objectReference: {fileID: 3777177508005965685}
     - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
+      propertyPath: pickupData
+      value: 
+      objectReference: {fileID: 11400000, guid: a43bbd073025065438e98bb6adaa36f9,
+        type: 2}
+    - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: SourcePrefab
+      value: 
+      objectReference: {fileID: 4664665653477612434}
+    - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
       propertyPath: WeaponMuzzle
       value: 
       objectReference: {fileID: 3164184066348580814}

@@ -39,8 +39,6 @@ namespace Unity.FPS.AI
         [Tooltip("Delay after death where the GameObject is destroyed (to allow for animation)")]
         public float DeathDuration = 0f;
 
-        [Tooltip("Start the next wave")]
-        public WaveManager waveManager;
 
         [Tooltip("Weapon")]
         public MeleeWeaponController meleeWeapon;
@@ -142,9 +140,6 @@ namespace Unity.FPS.AI
 
             m_ActorsManager = FindObjectOfType<ActorsManager>();
             DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
-
-            waveManager = FindObjectOfType<WaveManager>();
-            DebugUtility.HandleErrorIfNullFindObject<WaveManager, EnemyController>(waveManager, this);
 
             m_EnemyManager.RegisterEnemy(this);
 
@@ -405,7 +400,7 @@ namespace Unity.FPS.AI
         {
           
             EventManager.Broadcast(new EnemyKillEvent());
-            waveManager.OnEnemyKilled();
+            //waveManager.OnEnemyKilled();
             
 
             // spawn a particle system when dying

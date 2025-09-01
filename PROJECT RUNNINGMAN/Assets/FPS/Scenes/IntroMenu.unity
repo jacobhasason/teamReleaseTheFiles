@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9d73053268a2ae48bb9e7d4bf6419fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SceneName: RunScene
+  SceneName: MainScene
 --- !u!1 &160263376
 GameObject:
   m_ObjectHideFlags: 0
@@ -938,6 +938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RunLevel: 0
+  RunLevelTotal: 0
   SponsorPop: 0
   AudiencePop: 0
   CurrentRunMap: {fileID: 7192331822897656286, guid: 785276cb3a1231841a4b140101578d18,

@@ -188,6 +188,13 @@ namespace Unity.FPS.Gameplay
                     }
                 }
             }
+            
+            // Drop Weapon
+            if (m_InputHandler.GetDropInputDown())
+            {
+                DropCurrentWeapon();
+            }
+
 
         }
 
@@ -568,5 +575,31 @@ namespace Unity.FPS.Gameplay
                 newWeapon.ShowWeapon(true);
             }
         }
+
+        public void DropCurrentWeapon()
+        {
+            WeaponController activeWeapon = GetActiveWeapon();
+            if (activeWeapon == null || activeWeapon.pickupData == null || activeWeapon.pickupData.pickupPrefab == null)
+            {
+                Debug.LogWarning("No pickup data or prefab assigned for the active weapon.");
+                RemoveWeapon(activeWeapon); // FALLBACK: Destroys weapon without pickup
+                return;
+            }
+
+            // Spawn the pickup prefab in front of the player
+            Vector3 dropPos = transform.position + transform.forward * 2f + Vector3.up * 1f;
+            Quaternion dropRot = Quaternion.identity;
+            GameObject pickupInstance = Instantiate(activeWeapon.pickupData.pickupPrefab, dropPos, dropRot);
+            pickupInstance.tag = "Pickup";
+
+            // Optional: give it physics
+            Rigidbody rb = pickupInstance.GetComponent<Rigidbody>();
+            if (rb != null)
+                rb.AddForce(transform.forward * 2f, ForceMode.Impulse);
+
+            // Remove weapon from player
+            RemoveWeapon(activeWeapon);
+        }
+
     }
 }

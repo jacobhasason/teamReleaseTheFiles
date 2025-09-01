@@ -123,6 +123,12 @@ namespace Unity.FPS.Game
         [Tooltip("Sound played when changing to this weapon")]
         public AudioClip ChangeWeaponSfx;
 
+        [Header("Pickup Settings")]
+        [Tooltip("World pickup prefab that should spawn when this weapon is dropped")]
+        public GameObject SourcePrefab;
+
+        public WeaponPickupData pickupData;
+
         [Tooltip("Continuous Shooting Sound")] public bool UseContinuousShootSound = false;
         public AudioClip ContinuousShootStartSfx;
         public AudioClip ContinuousShootLoopSfx;
@@ -140,7 +146,7 @@ namespace Unity.FPS.Game
         Vector3 m_LastMuzzlePosition;
 
         public GameObject Owner { get; set; }
-        public GameObject SourcePrefab { get; set; }
+        //public GameObject SourcePrefab { get; set; }
         public bool IsCharging { get; private set; }
         public float CurrentAmmoRatio { get; private set; }
         public bool IsWeaponActive { get; private set; }

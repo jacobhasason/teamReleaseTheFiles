@@ -78,6 +78,11 @@ namespace Unity.FPS.Gameplay
                 GameConstants.k_AxisNameJoystickLookVertical);
         }
 
+        public bool GetDropInputDown()
+        {
+            return Input.GetButtonDown(GameConstants.k_ButtonDrop);
+        }
+
         public bool GetJumpInputDown()
         {
             if (CanProcessInput())
