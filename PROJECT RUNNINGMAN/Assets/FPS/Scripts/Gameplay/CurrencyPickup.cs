@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.FPS.Gameplay;
 
 public class CurrencyPickup : MonoBehaviour
 {

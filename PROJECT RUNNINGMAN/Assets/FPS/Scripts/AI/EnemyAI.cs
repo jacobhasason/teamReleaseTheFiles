@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using Unity.FPS.Game;
+using Unity.FPS.Gameplay;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Health))]
 public class EnemyAI : MonoBehaviour
@@ -194,13 +195,15 @@ public class EnemyAI : MonoBehaviour
 
     public void OnDamaged(float damage)
     {
+        DetectPlayer();
+        TryAttackPlayer();
         onDamaged?.Invoke();
        
     }
 
     private void OnDie()
     {
-        Debug.Log("Dead");
+        //Debug.Log("Dead");
         // Play death VFX
         if (DeathVfx != null && DeathVfxSpawnPoint != null)
         {

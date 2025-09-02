@@ -81,7 +81,7 @@ namespace Unity.FPS.Gameplay
         public UnityAction<WeaponController, int> OnAddedWeapon;
         public UnityAction<WeaponController, int> OnRemovedWeapon;
 
-        WeaponController[] m_WeaponSlots = new WeaponController[3]; // 3 available weapon slots
+        WeaponController[] m_WeaponSlots = new WeaponController[9]; // 9 available weapon slots
         PlayerInputHandler m_InputHandler;
         PlayerCharacterController m_PlayerCharacterController;
         float m_WeaponBobFactor;
@@ -581,13 +581,13 @@ namespace Unity.FPS.Gameplay
             WeaponController activeWeapon = GetActiveWeapon();
             if (activeWeapon == null || activeWeapon.pickupData == null || activeWeapon.pickupData.pickupPrefab == null)
             {
-                Debug.LogWarning("No pickup data or prefab assigned for the active weapon.");
+                Debug.LogWarning("No pickup data or prefab assigned for the active weapon. No pickup created!");
                 RemoveWeapon(activeWeapon); // FALLBACK: Destroys weapon without pickup
                 return;
             }
 
             // Spawn the pickup prefab in front of the player
-            Vector3 dropPos = transform.position + transform.forward * 2f + Vector3.up * 1f;
+            Vector3 dropPos = transform.position + transform.forward * 2f + Vector3.up * 0.5f;
             Quaternion dropRot = Quaternion.identity;
             GameObject pickupInstance = Instantiate(activeWeapon.pickupData.pickupPrefab, dropPos, dropRot);
             pickupInstance.tag = "Pickup";

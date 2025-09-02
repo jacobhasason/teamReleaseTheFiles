@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using Unity.FPS.Gameplay;
 using Unity.FPS.Game;
+using TMPro; 
 
 using UnityEngine.EventSystems;
+using Unity.FPS.UI;
+using Unity.FPS.Gameplay;
 
 public class MenuNavigation : MonoBehaviour
 {
@@ -17,17 +20,26 @@ public class MenuNavigation : MonoBehaviour
     [HideInInspector]
     public WaveSpawner waveSpawner;
 
+    public CurrencyManager currencyManager;
+
+    [Header("Favor References")]
+    public TextMeshProUGUI AudienceFavorText;
+    public TextMeshProUGUI CorporateFavorText;
+
     PlayerCharacterController playerController;
     Health playerHealth;
     PlayerWeaponsManager playerWeapons;
+    
 
     void Start()
     {
+        
+
         if (waveSpawner == null)
             waveSpawner = FindObjectOfType<WaveSpawner>();
 
-        if (waveSpawner == null)
-            Debug.Log("No wave spawner found!");
+        if (currencyManager == null)
+            currencyManager = FindObjectOfType<CurrencyManager>();
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -40,6 +52,11 @@ public class MenuNavigation : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Debug.Log("Menu started");
+
+        AudienceCurrency = currencyManager.GetCurrency("AudienceFavor");
+        CorporateCurrency = currencyManager.GetCurrency("CorporateFavor");
+        AudienceFavorText.text = AudienceFavorText.text + " " + AudienceCurrency.ToString();
+        CorporateFavorText.text = CorporateFavorText.text + " " + CorporateCurrency.ToString();
     }
 
     public void OnOptionSelected(int index)
