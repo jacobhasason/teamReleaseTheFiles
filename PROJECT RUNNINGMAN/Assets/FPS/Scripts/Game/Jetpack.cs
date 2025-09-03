@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Unity.FPS.Gameplay
+namespace Unity.FPS.Game
 {
     [RequireComponent(typeof(AudioSource))]
     public class Jetpack : MonoBehaviour

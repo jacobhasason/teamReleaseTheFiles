@@ -68,7 +68,7 @@ Transform:
   m_GameObject: {fileID: 604056857072905958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.3392079, y: 0.35, z: -8.8}
-  m_LocalScale: {x: 0.75251, y: 0.75251, z: 0.75251}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9194397142622643394}
@@ -717,7 +717,7 @@ GameObject:
   - component: {fileID: 3894846157225312739}
   - component: {fileID: 1736709062543746308}
   - component: {fileID: 243706595887620749}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -851,7 +851,7 @@ GameObject:
   - component: {fileID: 6456243670331207639}
   - component: {fileID: 5311694246595529806}
   - component: {fileID: 4837573238099056286}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ImageFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1020,7 +1020,7 @@ GameObject:
   - component: {fileID: 8561694744117529887}
   - component: {fileID: 4836696995601516822}
   - component: {fileID: 6461149120380677755}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ImageBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1418,6 +1418,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4517482347572767512}
     m_Modifications:
+    - target: {fileID: 37172262226840884, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1604776671231173142, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1466,6 +1471,11 @@ PrefabInstance:
     - target: {fileID: 1604776671231173142, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2093786033360550060, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4670246568593848968, guid: 22199dea331926f4c929d51f1551983c,
@@ -1543,6 +1553,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: MeleeWeapon_Bat
       objectReference: {fileID: 0}
+    - target: {fileID: 4753831000562562256, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5179220304453659723, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Controller
@@ -1558,6 +1573,11 @@ PrefabInstance:
       propertyPath: WeaponAnimator
       value: 
       objectReference: {fileID: 8987442269738271847}
+    - target: {fileID: 6868630207480719923, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22199dea331926f4c929d51f1551983c, type: 3}
 --- !u!114 &5596128847113748887 stripped

@@ -13,6 +13,9 @@ public class MeleeWeaponController : WeaponController
     public float AttackRate = 1f;
     public float HitSoundPause = .08f;
 
+    [Header("Modifiers")]
+    public float AdditionalDamage = 0f;
+
     float m_LastAttackTime;
 
     [Header("Sound and Effects")]
@@ -66,6 +69,7 @@ public class MeleeWeaponController : WeaponController
     // New method (for enemies)
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
+        float finalDamage = Damage + AdditionalDamage;
         WeaponAnimator?.SetTrigger("Swing");
         MeleeAudioSource.PlayOneShot(SwingSfx);
 
@@ -75,7 +79,7 @@ public class MeleeWeaponController : WeaponController
 
             var health = hit.collider.GetComponentInParent<Health>();
             if (health != null)
-                health.TakeDamage(Damage, gameObject);
+                health.TakeDamage(finalDamage, gameObject);
 
             var kb_health = hit.collider.GetComponentInParent<KBHealth>();
             if (kb_health != null)

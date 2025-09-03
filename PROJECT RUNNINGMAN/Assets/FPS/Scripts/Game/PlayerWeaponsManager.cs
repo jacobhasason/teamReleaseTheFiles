@@ -4,7 +4,7 @@ using Unity.FPS.Game;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Unity.FPS.Gameplay
+namespace Unity.FPS.Game
 {
     [RequireComponent(typeof(PlayerInputHandler))]
     public class PlayerWeaponsManager : MonoBehaviour
@@ -81,7 +81,7 @@ namespace Unity.FPS.Gameplay
         public UnityAction<WeaponController, int> OnAddedWeapon;
         public UnityAction<WeaponController, int> OnRemovedWeapon;
 
-        WeaponController[] m_WeaponSlots = new WeaponController[9]; // 9 available weapon slots
+        public WeaponController[] m_WeaponSlots;
         PlayerInputHandler m_InputHandler;
         PlayerCharacterController m_PlayerCharacterController;
         float m_WeaponBobFactor;
@@ -96,6 +96,7 @@ namespace Unity.FPS.Gameplay
 
         void Start()
         {
+            m_WeaponSlots = new WeaponController[9]; // 9 available weapon slots
             ActiveWeaponIndex = -1;
             m_WeaponSwitchState = WeaponSwitchState.Down;
 

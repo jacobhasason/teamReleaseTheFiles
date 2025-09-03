@@ -2,11 +2,12 @@
 using Unity.FPS.Game;
 using UnityEngine;
 
-namespace Unity.FPS.Gameplay
+namespace Unity.FPS.Game
 {
     public class ProjectileStandard : ProjectileBase
     {
-        [Header("General")] [Tooltip("Radius of this projectile's collision detection")]
+        [Header("General")]
+        [Tooltip("Radius of this projectile's collision detection")]
         public float Radius = 0.01f;
 
         [Tooltip("Transform representing the root of the projectile (used for accurate collision detection)")]
@@ -27,13 +28,14 @@ namespace Unity.FPS.Gameplay
         [Tooltip("Offset along the hit normal where the VFX will be spawned")]
         public float ImpactVfxSpawnOffset = 0.1f;
 
-        [Tooltip("Clip to play on impact")] 
+        [Tooltip("Clip to play on impact")]
         public AudioClip ImpactSfxClip;
 
         [Tooltip("Layers this projectile can collide with")]
         public LayerMask HittableLayers = -1;
 
-        [Header("Movement")] [Tooltip("Speed of the projectile")]
+        [Header("Movement")]
+        [Tooltip("Speed of the projectile")]
         public float Speed = 20f;
 
         [Tooltip("Downward acceleration from gravity")]
@@ -46,13 +48,15 @@ namespace Unity.FPS.Gameplay
         [Tooltip("Determines if the projectile inherits the velocity that the weapon's muzzle had when firing")]
         public bool InheritWeaponVelocity = false;
 
-        [Header("Damage")] [Tooltip("Damage of the projectile")]
+        [Header("Damage")]
+        [Tooltip("Damage of the projectile")]
         public float Damage = 40f;
 
-        [Tooltip("Area of damage. Keep empty if you don<t want area damage")]
+        [Tooltip("Area of damage. Keep empty if you don't want area damage")]
         public DamageArea AreaOfDamage;
 
-        [Header("Debug")] [Tooltip("Color of the projectile radius debug view")]
+        [Header("Debug")]
+        [Tooltip("Color of the projectile radius debug view")]
         public Color RadiusColor = Color.cyan * 0.2f;
 
         ProjectileBase m_ProjectileBase;
@@ -65,6 +69,10 @@ namespace Unity.FPS.Gameplay
         List<Collider> m_IgnoredColliders;
 
         const QueryTriggerInteraction k_TriggerInteraction = QueryTriggerInteraction.Collide;
+
+        // NEW: sponsorship/weapon extra damage passed in by WeaponController
+        float _additionalDamageFromWeapon = 0f;
+        public void SetAdditionalDamage(float bonus) => _additionalDamageFromWeapon = bonus;
 
         void OnEnable()
         {
@@ -89,7 +97,7 @@ namespace Unity.FPS.Gameplay
             Collider[] ownerColliders = m_ProjectileBase.Owner.GetComponentsInChildren<Collider>();
             m_IgnoredColliders.AddRange(ownerColliders);
 
-            // Handle case of player shooting (make projectiles not go through walls, and remember center-of-screen trajectory)
+            // Handle case of player shooting
             PlayerWeaponsManager playerWeaponsManager = m_ProjectileBase.Owner.GetComponent<PlayerWeaponsManager>();
             if (playerWeaponsManager)
             {
@@ -130,8 +138,7 @@ namespace Unity.FPS.Gameplay
                 transform.position += m_ProjectileBase.InheritedMuzzleVelocity * Time.deltaTime;
             }
 
-            // Drift towards trajectory override (this is so that projectiles can be centered 
-            // with the camera center even though the actual weapon is offset)
+            // Drift towards trajectory override
             if (m_HasTrajectoryOverride && m_ConsumedTrajectoryCorrectionVector.sqrMagnitude <
                 m_TrajectoryCorrectionVector.sqrMagnitude)
             {
@@ -142,11 +149,8 @@ namespace Unity.FPS.Gameplay
                 correctionThisFrame = Vector3.ClampMagnitude(correctionThisFrame, correctionLeft.magnitude);
                 m_ConsumedTrajectoryCorrectionVector += correctionThisFrame;
 
-                // Detect end of correction
                 if (m_ConsumedTrajectoryCorrectionVector.sqrMagnitude == m_TrajectoryCorrectionVector.sqrMagnitude)
-                {
                     m_HasTrajectoryOverride = false;
-                }
 
                 transform.position += correctionThisFrame;
             }
@@ -157,41 +161,35 @@ namespace Unity.FPS.Gameplay
             // Gravity
             if (GravityDownAcceleration > 0)
             {
-                // add gravity to the projectile velocity for ballistic effect
                 m_Velocity += Vector3.down * GravityDownAcceleration * Time.deltaTime;
             }
 
             // Hit detection
+            RaycastHit closestHit = new RaycastHit { distance = Mathf.Infinity };
+            bool foundHit = false;
+
+            Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
+            RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
+                displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
+                k_TriggerInteraction);
+            foreach (var hit in hits)
             {
-                RaycastHit closestHit = new RaycastHit();
-                closestHit.distance = Mathf.Infinity;
-                bool foundHit = false;
-
-                // Sphere cast
-                Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
-                RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
-                    displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
-                    k_TriggerInteraction);
-                foreach (var hit in hits)
+                if (IsHitValid(hit) && hit.distance < closestHit.distance)
                 {
-                    if (IsHitValid(hit) && hit.distance < closestHit.distance)
-                    {
-                        foundHit = true;
-                        closestHit = hit;
-                    }
+                    foundHit = true;
+                    closestHit = hit;
+                }
+            }
+
+            if (foundHit)
+            {
+                if (closestHit.distance <= 0f)
+                {
+                    closestHit.point = Root.position;
+                    closestHit.normal = -transform.forward;
                 }
 
-                if (foundHit)
-                {
-                    // Handle case of casting while already inside a collider
-                    if (closestHit.distance <= 0f)
-                    {
-                        closestHit.point = Root.position;
-                        closestHit.normal = -transform.forward;
-                    }
-
-                    OnHit(closestHit.point, closestHit.normal, closestHit.collider);
-                }
+                OnHit(closestHit.point, closestHit.normal, closestHit.collider);
             }
 
             m_LastRootPosition = Root.position;
@@ -199,43 +197,32 @@ namespace Unity.FPS.Gameplay
 
         bool IsHitValid(RaycastHit hit)
         {
-            // ignore hits with an ignore component
-            if (hit.collider.GetComponent<IgnoreHitDetection>())
-            {
-                return false;
-            }
+            if (hit.collider.GetComponent<IgnoreHitDetection>()) return false;
 
-            // ignore hits with triggers that don't have a Damageable component
-            if (hit.collider.isTrigger && hit.collider.GetComponent<Damageable>() == null)
-            {
-                return false;
-            }
+            if (hit.collider.isTrigger && hit.collider.GetComponent<Damageable>() == null) return false;
 
-            // ignore hits with specific ignored colliders (self colliders, by default)
-            if (m_IgnoredColliders != null && m_IgnoredColliders.Contains(hit.collider))
-            {
-                return false;
-            }
+            if (m_IgnoredColliders != null && m_IgnoredColliders.Contains(hit.collider)) return false;
 
             return true;
         }
 
         void OnHit(Vector3 point, Vector3 normal, Collider collider)
         {
+            // Apply extra damage provided by the firing weapon
+            float finalDamage = Damage + _additionalDamageFromWeapon;
+
             // damage
             if (AreaOfDamage)
             {
-                // area damage
-                AreaOfDamage.InflictDamageInArea(Damage, point, HittableLayers, k_TriggerInteraction,
+                AreaOfDamage.InflictDamageInArea(finalDamage, point, HittableLayers, k_TriggerInteraction,
                     m_ProjectileBase.Owner);
             }
             else
             {
-                // point damage
                 Damageable damageable = collider.GetComponent<Damageable>();
                 if (damageable)
                 {
-                    damageable.InflictDamage(Damage, false, m_ProjectileBase.Owner);
+                    damageable.InflictDamage(finalDamage, false, m_ProjectileBase.Owner);
                 }
             }
 

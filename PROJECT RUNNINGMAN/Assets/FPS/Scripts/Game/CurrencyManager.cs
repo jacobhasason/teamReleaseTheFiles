@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using Unity.FPS.UI;
+using UnityEngine.UI;
 
 // The two types of currency in the game.
 // AudienceFavor = default currency earned from kills
@@ -17,6 +17,13 @@ namespace Unity.FPS.Gameplay {
         // Current amounts stored in memory
         public int AudienceFavor { get; private set; }
         public int CorporateFavor { get; private set; }
+        public bool hasSponser = false;
+
+        void Start()
+        {
+            // For Testing
+            AddCurrency(CurrencyType.AudienceFavor, 500); 
+        }
 
         // Add currency of a given type
         public void AddCurrency(CurrencyType type, int amount)
@@ -79,14 +86,4 @@ namespace Unity.FPS.Gameplay {
             }
         }
     }
-
-   /* public void UnlockCorporateSponsorship()
-    {
-        if (!currencies.ContainsKey(CurrencyType.CorporateFavor))
-        {
-            currencies[CurrencyType.CorporateFavor] = 0;
-            Debug.Log("Corporate Sponsorship unlocked! Now you can earn Corporate Favor.");
-        }
-    }
-   */
 }

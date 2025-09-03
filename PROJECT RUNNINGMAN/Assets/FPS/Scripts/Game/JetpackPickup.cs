@@ -1,4 +1,4 @@
-﻿namespace Unity.FPS.Gameplay
+﻿namespace Unity.FPS.Game
 {
     public class JetpackPickup : Pickup
     {

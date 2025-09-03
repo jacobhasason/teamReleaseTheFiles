@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+//using Unity.FPS.Gameplay;
+
 
 namespace Unity.FPS.Game
 {
@@ -30,6 +32,9 @@ namespace Unity.FPS.Game
     {
         [Header("Information")] [Tooltip("The name that will be displayed in the UI for this weapon")]
         public string WeaponName;
+
+        [Tooltip("The listed cost that will appear in the wave menu shop")]
+        public int PurchaseCost;
 
         [Tooltip("The image that will be displayed in the UI for this weapon")]
         public Sprite WeaponIcon;
@@ -69,6 +74,10 @@ namespace Unity.FPS.Game
 
         [Tooltip("Translation to apply to weapon arm when aiming with this weapon")]
         public Vector3 AimOffset;
+
+        [Tooltip("Increased Damage Status Buff")]
+        public float AdditionalDamage; // sponsorship buff or other effects
+
 
         [Header("Ammo Parameters")]
         [Tooltip("Should the player manually reload")]
@@ -462,6 +471,11 @@ namespace Unity.FPS.Game
                 Vector3 shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
                 ProjectileBase newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
                     Quaternion.LookRotation(shotDirection));
+                var std = newProjectile as Unity.FPS.Game.ProjectileStandard;
+                if (std != null)
+                {
+                    std.SetAdditionalDamage(AdditionalDamage);
+                }
                 newProjectile.Shoot(this);
             }
 

@@ -84,6 +84,10 @@ public class EnemyAI : MonoBehaviour
 
         if (headTransform == null)
             headTransform = transform.Find("Head");
+
+        // Ensure we have a CurrencyManager
+    if (currencyManager == null)
+            currencyManager = FindObjectOfType<CurrencyManager>();
     }
 
 
@@ -203,20 +207,30 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDie()
     {
-        //Debug.Log("Dead");
-        // Play death VFX
+        // VFX (unchanged)
         if (DeathVfx != null && DeathVfxSpawnPoint != null)
         {
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
-            Destroy(vfx, 5f); // cleanup
+            Destroy(vfx, 5f);
         }
 
-        // Drop loot
-        if (LootPrefab != null && Random.value <= DropRate)
+        // Audience Favor drop
+        if (audiencePickupPrefab != null && Random.value <= DropRate)
+        {
             Instantiate(audiencePickupPrefab, transform.position, Quaternion.identity);
-    
-    // Destroy enemy after a delay
-    Destroy(gameObject, DeathDuration);
+        }
+
+        // Corporate Favor drop (half as often), only if sponsorship active
+        if (corporatePickupPrefab != null && currencyManager != null && currencyManager.hasSponser)
+        {
+            float corporateChance = Mathf.Clamp01(DropRate * 0.5f); // half the rate
+            if (Random.value <= corporateChance)
+            {
+                Instantiate(corporatePickupPrefab, transform.position, Quaternion.identity);
+            }
+        }
+
+        Destroy(gameObject, DeathDuration);
     }
 
 

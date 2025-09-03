@@ -29,5 +29,4 @@ public class ButtonHook : MonoBehaviour
         if (costText) costText.text = $"Cost: {cost}";
         if (spriteImage) spriteImage.sprite = icon;
     }
-
 }
