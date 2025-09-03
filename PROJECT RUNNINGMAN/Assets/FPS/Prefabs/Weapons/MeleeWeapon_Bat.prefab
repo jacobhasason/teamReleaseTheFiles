@@ -273,6 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponName: Bat
+  PurchaseCost: 10
   WeaponIcon: {fileID: 0}
   CrosshairDataDefault:
     CrosshairSprite: {fileID: 0}
@@ -292,6 +293,7 @@ MonoBehaviour:
   RecoilForce: 1
   AimZoomRatio: 1
   AimOffset: {x: 0, y: 0, z: 0}
+  AdditionalDamage: 0
   AutomaticReload: 1
   HasPhysicalBullets: 0
   ClipSize: 30
@@ -311,6 +313,8 @@ MonoBehaviour:
   UnparentMuzzleFlash: 0
   ShootSfx: {fileID: 0}
   ChangeWeaponSfx: {fileID: 0}
+  SourcePrefab: {fileID: 0}
+  pickupData: {fileID: 0}
   UseContinuousShootSound: 0
   ContinuousShootStartSfx: {fileID: 0}
   ContinuousShootLoopSfx: {fileID: 0}
@@ -320,6 +324,7 @@ MonoBehaviour:
   Range: 2
   AttackRate: 1
   HitSoundPause: 0.07
+  AdditionalDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}

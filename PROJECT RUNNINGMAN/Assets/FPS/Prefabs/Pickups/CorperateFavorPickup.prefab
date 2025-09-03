@@ -111,5 +111,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   amount: 10
-  type: 0
+  type: 1
   pickupSFX: {fileID: 8300000, guid: 7b83d61917ac1224f942a0609b1221f2, type: 3}

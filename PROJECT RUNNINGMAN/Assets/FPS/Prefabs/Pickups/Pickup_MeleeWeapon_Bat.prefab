@@ -76,8 +76,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bffb1311779ed346a19fef7c9fa65ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VerticalBobFrequency: 1
-  BobbingAmount: 1
+  VerticalBobFrequency: 0
+  BobbingAmount: 0
   RotatingSpeed: 360
   PickupSfx: {fileID: 8300000, guid: d0f1afed8fa916244af6ca73579ded67, type: 3}
   PickupVfxPrefab: {fileID: 0}
@@ -196,6 +196,17 @@ PrefabInstance:
       propertyPath: WeaponRoot
       value: 
       objectReference: {fileID: 3777177508005965685}
+    - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: pickupData
+      value: 
+      objectReference: {fileID: 11400000, guid: a43bbd073025065438e98bb6adaa36f9,
+        type: 2}
+    - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: SourcePrefab
+      value: 
+      objectReference: {fileID: 4664665653477612434}
     - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: WeaponMuzzle
