@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3627025833524695565}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,9 +52,9 @@ GameObject:
   - component: {fileID: 4618917417234978964}
   - component: {fileID: 5387527105081164854}
   - component: {fileID: 5103119163402167119}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -67,7 +67,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604056857072905958}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3392079, y: 0.35, z: -8.8}
+  m_LocalPosition: {x: 0.3392079, y: 0.2, z: -8.8}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -158,6 +158,12 @@ MonoBehaviour:
   headTransform: {fileID: 7474353014687095198}
   attackDistance: 5
   attackCooldown: 1
+  aggroDuration: 8
+  aggroOnDamage: 1
+  enemyTag: Enemy
+  bumpRetreatDistance: 2
+  bumpRetreatDuration: 0.8
+  bumpCooldown: 0.5
   onDamaged:
     m_PersistentCalls:
       m_Calls: []
@@ -169,13 +175,13 @@ MonoBehaviour:
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
-  LootPrefab: {fileID: 5444484267455682382, guid: 753779c1aae0ebc4081c2189cdf6664f,
+  LootPrefab: {fileID: 5444484267455682382, guid: 250ce8930ddccb548a26af523c1a397e,
     type: 3}
   DropRate: 1
   DeathDuration: 0
-  audiencePickupPrefab: {fileID: 217277530234908594, guid: 1459ce936c819e74c986176050881a18,
+  audiencePickupPrefab: {fileID: 7825903155294947248, guid: 7e738761834870242a9f59ac37498247,
     type: 3}
-  corporatePickupPrefab: {fileID: 7825903155294947248, guid: 3ff8e3510a804a24ba46ed3f56e77e33,
+  corporatePickupPrefab: {fileID: 7825903155294947248, guid: 94c0752532b2fb146896c6241580ece0,
     type: 3}
   currencyManager: {fileID: 0}
   HitSFX: {fileID: 8300000, guid: 53d2238f4c4b2aa4f8e559c7af9e0126, type: 3}
@@ -297,7 +303,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2632619244612789469}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Upperleg.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -330,7 +336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4428802681526196621}
   - component: {fileID: 1297841741873008357}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +435,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3348723605150700403}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LowerArm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -461,7 +467,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1708056950183932878}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: UpperArm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -493,7 +499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 807552068147308413}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -524,7 +530,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7206100548378637077}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.L_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -555,7 +561,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7578508892866133787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: UpperArm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -587,7 +593,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7875734993036593276}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.R_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -618,7 +624,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9084903651916626370}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Lowerleg.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -650,7 +656,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3428354531797102030}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Upperleg.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -682,7 +688,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6692448056033121340}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HealthBarPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -717,7 +723,7 @@ GameObject:
   - component: {fileID: 3894846157225312739}
   - component: {fileID: 1736709062543746308}
   - component: {fileID: 243706595887620749}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -817,7 +823,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5922358940578263828}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Lowerleg.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -851,7 +857,7 @@ GameObject:
   - component: {fileID: 6456243670331207639}
   - component: {fileID: 5311694246595529806}
   - component: {fileID: 4837573238099056286}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ImageFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -925,7 +931,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 678849612087741515}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.R_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -956,7 +962,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3295212320475998622}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -971,7 +977,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945690424395368204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.2600007, y: 0, z: 0}
+  m_LocalPosition: {x: -0.26, y: 0, z: 2.56}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -987,7 +993,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5441854473181977912}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.L_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1020,7 +1026,7 @@ GameObject:
   - component: {fileID: 8561694744117529887}
   - component: {fileID: 4836696995601516822}
   - component: {fileID: 6461149120380677755}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ImageBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1094,7 +1100,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7474353014687095198}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1126,7 +1132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8128830749515104625}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LowerArm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1158,7 +1164,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9194397142622643394}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1191,7 +1197,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1529970709935162361}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1224,7 +1230,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4517482347572767512}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1257,7 +1263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6572684591395675752}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1291,7 +1297,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4660823055495645506}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1323,7 +1329,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8649886526573573995}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1355,7 +1361,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1196453498691807429}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1389,7 +1395,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3877255651281624814}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1404,7 +1410,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8866002012705257835}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.52, y: 0, z: 0}
+  m_LocalPosition: {x: -1.28, y: 0, z: 0.39}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1421,7 +1427,7 @@ PrefabInstance:
     - target: {fileID: 37172262226840884, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1604776671231173142, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
@@ -1476,7 +1482,7 @@ PrefabInstance:
     - target: {fileID: 2093786033360550060, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4670246568593848968, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
@@ -1556,7 +1562,7 @@ PrefabInstance:
     - target: {fileID: 4753831000562562256, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5179220304453659723, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
@@ -1576,7 +1582,7 @@ PrefabInstance:
     - target: {fileID: 6868630207480719923, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22199dea331926f4c929d51f1551983c, type: 3}

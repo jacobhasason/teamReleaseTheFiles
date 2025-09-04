@@ -25,8 +25,19 @@ public class MeleeWeaponController : WeaponController
     public AudioClip ToneSoundSfx;
     public AudioMixerGroup TonedSounds;
 
+    
+    [Tooltip("Hold right mouse (aim) to block.")]
+    public bool IsBlocking { get; private set; }
+
+    [Range(0f, 1f)]
+    public float BlockChance = 0.66f; // 66% of hits are blocked
+
+    private PlayerInputHandler _input;
+
     AudioSource MeleeAudioSource;
     PlayerWeaponsManager playerWeaponsManager;
+
+
 
     void Start()
     {
@@ -37,10 +48,22 @@ public class MeleeWeaponController : WeaponController
         if (playerWeaponsManager?.WeaponCamera == null)
             Debug.LogError("WeaponCamera not assigned in PlayerWeaponsManager!");
 
+        playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
+        _input = FindObjectOfType<PlayerInputHandler>(); // grabs the input system
+
         MeleeAudioSource = GetComponent<AudioSource>();
         DebugUtility.HandleErrorIfNullGetComponent<AudioSource, MeleeWeaponController>(
             MeleeAudioSource, this, gameObject);
     }
+
+    void Update()
+    {
+        if (_input != null)
+        {
+            IsBlocking = _input.GetAimInputHeld(); // true while right click is held
+        }
+    }
+
 
     public override bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
     {
@@ -89,6 +112,23 @@ public class MeleeWeaponController : WeaponController
             }
         }
     }
+
+    // Called by attackers when applying damage to the player.
+    // Returns true if the hit was blocked and should be ignored.
+    public bool TryBlockHit()
+    {
+        if (IsBlocking)
+        {
+            // 66% chance to succeed
+            if (Random.value < BlockChance)
+            {
+                Debug.Log("Attack blocked!");
+                return true; // muted damage
+            }
+        }
+        return false; // not blocked, apply damage normally
+    }
+
 
 
 

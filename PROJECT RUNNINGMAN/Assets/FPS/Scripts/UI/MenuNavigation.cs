@@ -203,7 +203,7 @@ public class MenuNavigation : MonoBehaviour
                 Debug.Log($"[Shop] Using weapon '{option.DisplayName}' from prefab '{option.WeaponPrefab.name}', wc={(wc ? wc.name : "null")}");
 
             }
-            // Sponsership
+            // Sponsorship
             else if (roll < 0.8f && sponsorships != null && sponsorships.Length > 0 && string.IsNullOrEmpty(sponser))
             {
                 option.Type = RewardType.Sponsorship;
@@ -266,10 +266,22 @@ public class MenuNavigation : MonoBehaviour
 
             case "Quantum Kinetics Incorporated":
                 {
-                    // +0.5 speed & jump per 10 corporate favor 
-                    float steps = (currencyManager.CorporateFavor / 10) * 0.5f;
-                    playerController.MaxSpeedOnGround += steps;
-                    playerController.JumpForce += steps;
+                    // +0.5 speed & jump per 10 corporate favor until 50 jump
+                    if(playerController.JumpForce < 50)
+                    {
+                        float steps = (currencyManager.CorporateFavor / 10) * 0.5f;
+                        playerController.MaxSpeedOnGround += steps;
+                        playerController.JumpForce += steps;
+                        playerController.MaxSpeedInAir += steps;
+                    }
+                    
+                    // Gradually reduce fall damage
+                    if (currencyManager.CorporateFavor >= 50 && playerController.FallDamageAtMaxSpeed > 0);
+                    {
+                        playerController.FallDamageAtMinSpeed -= (currencyManager.CorporateFavor / 10);
+                        playerController.FallDamageAtMaxSpeed -= (currencyManager.CorporateFavor / 10);
+                    }
+                    
                     break;
                 }
 
