@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Audio;
 using Debug = UnityEngine.Debug;
@@ -14,7 +15,7 @@ public class MeleeWeaponController : WeaponController
     public float HitSoundPause = .08f;
 
     [Header("Modifiers")]
-    public float AdditionalDamage = 0f;
+    public float AdditionalMeleeDamage = 0f;
 
     float m_LastAttackTime;
 
@@ -25,12 +26,14 @@ public class MeleeWeaponController : WeaponController
     public AudioClip ToneSoundSfx;
     public AudioMixerGroup TonedSounds;
 
+    Animator MeleeWeaponAnimator;
     AudioSource MeleeAudioSource;
     PlayerWeaponsManager playerWeaponsManager;
 
     void Start()
     {
         playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
+        MeleeWeaponAnimator = FindObjectOfType<Animator>();
 
         if (playerWeaponsManager == null)
             Debug.LogError("PlayerWeaponsManager not found in parent!");
@@ -69,8 +72,11 @@ public class MeleeWeaponController : WeaponController
     // New method (for enemies)
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
-        float finalDamage = Damage + AdditionalDamage;
-        WeaponAnimator?.SetTrigger("Swing");
+        float finalDamage = Damage + AdditionalMeleeDamage;
+        if (playerWeaponsManager)
+        {
+            MeleeWeaponAnimator?.SetTrigger("Swing");
+        }
         MeleeAudioSource.PlayOneShot(SwingSfx);
 
         if (Physics.Raycast(attackOrigin.position, direction, out RaycastHit hit, Range))

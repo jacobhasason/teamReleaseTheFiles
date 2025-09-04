@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     public Transform[] waypoints;
     public float walkSpeed = 3.5f;
     public float runSpeed = 6f;
+    public float swingSpeed = 0.5f;
     public float waitTimeAtWaypoint = 2f;
 
     [Header("Detection Settings")]
@@ -37,6 +38,7 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;
     private Health health;
     private Transform player;
+    private Animator EnemyAnimator;
     private int currentWaypoint = 0;
     private float waitTimer = 0f;
     private float lastAttackTime = -999f;
@@ -66,6 +68,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         health = GetComponent<Health>();
+        EnemyAnimator = GetComponent<Animator>();
 
         if (health == null)
         {
@@ -122,12 +125,17 @@ public class EnemyAI : MonoBehaviour
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, player.position);
         playerInSight = false;
-
+        if (distance > 2.5f * viewRadius && Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, 2f * meleeWeapon.Range))
+        {
+            EnemyAnimator?.SetTrigger("Idle");
+            
+        }
         if (distance <= viewRadius && Vector3.Angle(transform.forward, dirToPlayer) <= viewAngle / 2)
         {
             if (!Physics.Raycast(transform.position, dirToPlayer, distance, obstacleMask))
             {
                 playerInSight = true;
+                EnemyAnimator?.SetTrigger("Walk");
             }
         }
     }
@@ -172,7 +180,8 @@ public class EnemyAI : MonoBehaviour
         if (distance <= attackDistance && Time.time - lastAttackTime >= attackCooldown)
         {
             lastAttackTime = Time.time;
-
+            agent.speed = swingSpeed;
+            agent.isStopped = true;
             // Aim slightly higher (toward chest height)
             Vector3 targetPoint = player.position + Vector3.up * 1.0f;
             Vector3 dirToPlayer = (targetPoint - headTransform.position).normalized;
@@ -192,6 +201,11 @@ public class EnemyAI : MonoBehaviour
 
             // Perform the melee attack animation/audio/etc
             meleeWeapon.PerformAttack(headTransform, dirToPlayer);
+            EnemyAnimator?.SetTrigger("Strike");
+        }
+        else
+        {
+            EnemyAnimator?.SetTrigger("Walk");
         }
     }
 

@@ -160,6 +160,7 @@ Transform:
   m_Children:
   - {fileID: 5745074354576611958}
   - {fileID: 5442150761646596677}
+  - {fileID: 7624488306913005179}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -284,7 +285,7 @@ MonoBehaviour:
     CrosshairSize: 0
     CrosshairColor: {r: 0, g: 0, b: 0, a: 0}
   WeaponRoot: {fileID: 1602661717803204, guid: 903c43007ef77274bad19ed037b02892, type: 3}
-  WeaponMuzzle: {fileID: 0}
+  WeaponMuzzle: {fileID: 7624488306913005179}
   ShootType: 0
   ProjectilePrefab: {fileID: 0}
   DelayBetweenShots: 0.5
@@ -324,12 +325,43 @@ MonoBehaviour:
   Range: 2
   AttackRate: 1
   HitSoundPause: 0.07
-  AdditionalDamage: 0
+  AdditionalMeleeDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
   ToneSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
   TonedSounds: {fileID: 0}
+--- !u!1 &5246846884745188636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7624488306913005179}
+  m_Layer: 10
+  m_Name: MTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7624488306913005179
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5246846884745188636}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.683, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4670246568593848968}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6868630207480719923
 GameObject:
   m_ObjectHideFlags: 0
