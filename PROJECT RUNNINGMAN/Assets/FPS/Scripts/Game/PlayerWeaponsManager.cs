@@ -434,6 +434,32 @@ namespace Unity.FPS.Game
             }
         }
 
+        void AlignWeaponForView(WeaponController weapon)
+        {
+            // Parent to socket without keeping world pose
+            weapon.transform.SetParent(WeaponParentSocket, false);
+
+            // Hard zero the local pose
+            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localRotation = Quaternion.identity;
+            weapon.transform.localScale = Vector3.one;
+
+            // Ensure the visual root is active and zeroed (important if your prefab carries offsets)
+            if (weapon.WeaponRoot != null)
+            {
+                weapon.WeaponRoot.SetActive(true);
+                weapon.WeaponRoot.transform.localPosition = Vector3.zero;
+                weapon.WeaponRoot.transform.localRotation = Quaternion.identity;
+                weapon.WeaponRoot.transform.localScale = Vector3.one;
+            }
+
+            // Put whole hierarchy on FPS weapon layer so the WeaponCamera renders it
+            int layerIndex = Mathf.RoundToInt(Mathf.Log(FpsWeaponLayer.value, 2));
+            foreach (Transform t in weapon.gameObject.GetComponentsInChildren<Transform>(true))
+                t.gameObject.layer = layerIndex;
+        }
+
+
         // Adds a weapon to our inventory
         public bool AddWeapon(WeaponController weaponPrefab)
         {
@@ -454,11 +480,7 @@ namespace Unity.FPS.Game
                     // spawn the weapon prefab as child of the weapon socket
                     WeaponController weaponInstance = Instantiate(weaponPrefab, WeaponParentSocket);
                     Debug.Log($"Instantiated weapon {weaponInstance.name} as child of {weaponInstance.transform.parent.name}");
-
-                    weaponInstance.transform.localPosition = Vector3.zero;
-                    weaponInstance.transform.localRotation = Quaternion.identity;
-
-                    Debug.Log($"Weapon instantiated: {weaponInstance.name} at local position {weaponInstance.transform.localPosition} and local rotation {weaponInstance.transform.localRotation.eulerAngles}");
+                    
                     weaponInstance.transform.localPosition = Vector3.zero;
                     weaponInstance.transform.localRotation = Quaternion.identity;
 
@@ -466,6 +488,8 @@ namespace Unity.FPS.Game
                     weaponInstance.Owner = gameObject;
                     weaponInstance.SourcePrefab = weaponPrefab.gameObject;
                     weaponInstance.ShowWeapon(false);
+
+                    //AlignWeaponForView(weaponInstance);
 
                     // Assign the first person layer to the weapon
                     int layerIndex =

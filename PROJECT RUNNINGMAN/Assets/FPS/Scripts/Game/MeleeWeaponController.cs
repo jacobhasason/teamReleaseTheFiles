@@ -39,6 +39,7 @@ public class MeleeWeaponController : WeaponController
 
 
 
+
     void Start()
     {
         playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
@@ -55,6 +56,8 @@ public class MeleeWeaponController : WeaponController
         DebugUtility.HandleErrorIfNullGetComponent<AudioSource, MeleeWeaponController>(
             MeleeAudioSource, this, gameObject);
     }
+
+
 
     void Update()
     {

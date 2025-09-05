@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad90ba0b1477764da373f5ec01a8cb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WeaponName: Shotgun
+  WeaponName: Shotputgun
   PurchaseCost: 40
   WeaponIcon: {fileID: 21300000, guid: 8cbb10368086f014a8b7fc8932e7f436, type: 3}
   CrosshairDataDefault:
@@ -160,11 +160,11 @@ MonoBehaviour:
   WeaponRoot: {fileID: 1505447205160222267}
   WeaponMuzzle: {fileID: 8334323006752503713}
   ShootType: 0
-  ProjectilePrefab: {fileID: 8924682559891268397, guid: f05c7e6fbbfbe824388456bb4abff9d4,
+  ProjectilePrefab: {fileID: 5542020336735652036, guid: 9c2599cfe4c334645ab393e7723cd5bb,
     type: 3}
   DelayBetweenShots: 0.2
-  BulletSpreadAngle: 7
-  BulletsPerShot: 24
+  BulletSpreadAngle: 3
+  BulletsPerShot: 2
   RecoilForce: 1
   AimZoomRatio: 0.7
   AimOffset: {x: 0, y: 0.13, z: 0}
@@ -176,11 +176,11 @@ MonoBehaviour:
   EjectionPort: {fileID: 0}
   ShellCasingEjectionForce: 2
   ShellPoolSize: 1
-  AmmoReloadRate: 1.1
-  AmmoReloadDelay: 1
+  AmmoReloadRate: 2
+  AmmoReloadDelay: 2
   MaxAmmo: 2
   AutomaticReleaseOnCharged: 0
-  MaxChargeDuration: 1
+  MaxChargeDuration: 2
   AmmoUsedOnStartCharge: 0
   AmmoUsageRateWhileCharging: 1
   WeaponAnimator: {fileID: 0}
@@ -189,7 +189,8 @@ MonoBehaviour:
   UnparentMuzzleFlash: 0
   ShootSfx: {fileID: 8300000, guid: be87267ec54c5264daffd2ffeb91d6a7, type: 3}
   ChangeWeaponSfx: {fileID: 8300000, guid: 7b83d61917ac1224f942a0609b1221f2, type: 3}
-  SourcePrefab: {fileID: 0}
+  SourcePrefab: {fileID: 5391986374566301945, guid: 66d579771ab0ab94a92b3411ba179621,
+    type: 3}
   pickupData: {fileID: 0}
   UseContinuousShootSound: 0
   ContinuousShootStartSfx: {fileID: 0}
