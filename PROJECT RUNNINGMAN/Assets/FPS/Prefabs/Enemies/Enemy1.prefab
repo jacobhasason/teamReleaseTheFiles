@@ -124,7 +124,6 @@ MonoBehaviour:
   - {fileID: 3877255651281624814}
   walkSpeed: 3.5
   runSpeed: 6
-  swingSpeed: 0.5
   waitTimeAtWaypoint: 2
   viewRadius: 15
   viewAngle: 90
@@ -138,6 +137,12 @@ MonoBehaviour:
   headTransform: {fileID: 7474353014687095198}
   attackDistance: 5
   attackCooldown: 1
+  aggroDuration: 8
+  aggroOnDamage: 1
+  enemyTag: Enemy
+  bumpRetreatDistance: 2
+  bumpRetreatDuration: 0.8
+  bumpCooldown: 0.5
   onDamaged:
     m_PersistentCalls:
       m_Calls: []
@@ -149,13 +154,13 @@ MonoBehaviour:
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
-  LootPrefab: {fileID: 5444484267455682382, guid: 753779c1aae0ebc4081c2189cdf6664f,
+  LootPrefab: {fileID: 5444484267455682382, guid: 250ce8930ddccb548a26af523c1a397e,
     type: 3}
   DropRate: 1
   DeathDuration: 0
-  audiencePickupPrefab: {fileID: 217277530234908594, guid: 1459ce936c819e74c986176050881a18,
+  audiencePickupPrefab: {fileID: 7825903155294947248, guid: 7e738761834870242a9f59ac37498247,
     type: 3}
-  corporatePickupPrefab: {fileID: 7825903155294947248, guid: 3ff8e3510a804a24ba46ed3f56e77e33,
+  corporatePickupPrefab: {fileID: 7825903155294947248, guid: 94c0752532b2fb146896c6241580ece0,
     type: 3}
   currencyManager: {fileID: 0}
   HitSFX: {fileID: 8300000, guid: 53d2238f4c4b2aa4f8e559c7af9e0126, type: 3}
