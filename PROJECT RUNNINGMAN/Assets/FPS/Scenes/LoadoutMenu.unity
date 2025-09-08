@@ -2826,7 +2826,9 @@ MonoBehaviour:
   - {fileID: 2225486910712267859, guid: 3439b4874b7b44e4eb2216314c46b85c, type: 3}
   - {fileID: 2225486910712267859, guid: 31d97e822763d1f4cb769f7e3f7f7333, type: 3}
   - {fileID: 7096511061945105766, guid: 692d66e480cddbc479e1172baac1b87d, type: 3}
+  - {fileID: 682392870342965217, guid: 8e465d18389bb3a4dbbf6614ae73be9a, type: 3}
   - {fileID: 682392870342965217, guid: 30c345e1f5692c7478caa9142cb5dc4d, type: 3}
+  - {fileID: 682392870342965217, guid: bb375981541da5341a91eef8add25718, type: 3}
   sponsorships:
   - {fileID: 11400000, guid: c194034c3f07a1142bfba053072dbe33, type: 2}
   - {fileID: 11400000, guid: c27b02bb44d15974faad887d36fc802e, type: 2}

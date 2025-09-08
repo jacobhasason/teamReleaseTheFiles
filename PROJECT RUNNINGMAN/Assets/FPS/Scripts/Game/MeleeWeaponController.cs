@@ -4,6 +4,7 @@ using Unity.FPS.Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
 using Debug = UnityEngine.Debug;
+using System.Threading.Tasks;
 
 public class MeleeWeaponController : WeaponController
 {
@@ -99,13 +100,19 @@ public class MeleeWeaponController : WeaponController
         WeaponAnimator?.SetTrigger("Swing");
         MeleeAudioSource.PlayOneShot(SwingSfx);
 
+        Wait(); // Account for animation delay
+
         if (Physics.Raycast(attackOrigin.position, direction, out RaycastHit hit, Range))
         {
             StartCoroutine(SwingProc());
 
             var health = hit.collider.GetComponentInParent<Health>();
             if (health != null)
+            {
+                
                 health.TakeDamage(finalDamage, gameObject);
+            }
+                
 
             var kb_health = hit.collider.GetComponentInParent<KBHealth>();
             if (kb_health != null)
@@ -114,6 +121,11 @@ public class MeleeWeaponController : WeaponController
                 StartCoroutine(TunedSwingProc(1f, 1f));
             }
         }
+    }
+
+    public async Task Wait()
+    {
+        await Task.Delay(2000);
     }
 
     // Called by attackers when applying damage to the player.

@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WeaponName: Cricket Bat
-  PurchaseCost: 20
+  PurchaseCost: 50
   WeaponIcon: {fileID: 21300000, guid: 81c448d84d41b244a91a738f53252f9b, type: 3}
   CrosshairDataDefault:
     CrosshairSprite: {fileID: 0}
@@ -224,16 +224,16 @@ MonoBehaviour:
   ContinuousShootStartSfx: {fileID: 0}
   ContinuousShootLoopSfx: {fileID: 0}
   ContinuousShootEndSfx: {fileID: 0}
-  Damage: 40
+  Damage: 50
   KBDamage: 1
   Range: 2
-  AttackRate: 1
+  AttackRate: 0.5
   HitSoundPause: 0.07
   AdditionalDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
-  ToneSoundSfx: {fileID: 8300000, guid: 9c793d7183ca03e4fbf328175291cee4, type: 3}
+  ToneSoundSfx: {fileID: 8300000, guid: a7fae22399a6e1d448dc0dd2210f1dac, type: 3}
   TonedSounds: {fileID: 0}
   BlockChance: 0.7
 --- !u!95 &5848168221876020428

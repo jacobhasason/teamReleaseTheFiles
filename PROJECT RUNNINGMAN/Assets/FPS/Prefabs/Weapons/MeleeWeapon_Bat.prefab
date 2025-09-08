@@ -176,7 +176,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -4165159243522768807, guid: fcc71635aab95ff4fbdf1880bf2afa2f,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -320,7 +320,7 @@ MonoBehaviour:
   ContinuousShootStartSfx: {fileID: 0}
   ContinuousShootLoopSfx: {fileID: 0}
   ContinuousShootEndSfx: {fileID: 0}
-  Damage: 40
+  Damage: 25
   KBDamage: 1
   Range: 2
   AttackRate: 1

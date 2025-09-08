@@ -5,6 +5,7 @@ using UnityEngine.Events;
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
 
+
 [RequireComponent(typeof(NavMeshAgent), typeof(Health))]
 public class EnemyAI : MonoBehaviour
 {
@@ -26,12 +27,13 @@ public class EnemyAI : MonoBehaviour
     public float attackDistance = 2f;
     public float attackCooldown = 1f;
 
+  
     [Header("Aggro Settings")]
     public float aggroDuration = 8f;
     public bool aggroOnDamage = true;
 
     [Header("Bump Retreat (Patrol Only)")]
-    public string enemyTag = "Enemy";
+    //public string enemyTag = "Enemy";
     public float bumpRetreatDistance = 2.0f;
     public float bumpRetreatDuration = 0.8f;
     public float bumpCooldown = 0.5f;
@@ -45,7 +47,7 @@ public class EnemyAI : MonoBehaviour
     public Color attackGizmoColor = Color.red;
 
     private NavMeshAgent agent;
-    private Health health;
+    public Health health;
     private Transform player;
     private int currentWaypoint = 0;
     private float waitTimer = 0f;
@@ -129,11 +131,12 @@ public class EnemyAI : MonoBehaviour
         // Priority: retreat > chase > patrol
         if (isBumpRetreating) return;
 
-        if (isAggro || playerInSight)
+        else if (isAggro || playerInSight)
         {
             ChasePlayer();
-            TryAttackPlayer();
+            TryAttackPlayer(); 
         }
+
         else
         {
             Patrol();
@@ -225,15 +228,19 @@ public class EnemyAI : MonoBehaviour
                     var h = hit.collider.GetComponentInParent<Health>();
                     if (h != null)
                     {
+                        
                         h.TakeDamage(meleeWeapon.Damage, gameObject);
                     }
                 }
             }
 
-            // 3) Always play the melee swing (your method may also deal damage; that's OK per your note)
+           
+            // 3) Always play the melee swing
             meleeWeapon.PerformAttack(headTransform, dirToPlayer);
         }
     }
+
+   
 
 
 
@@ -253,13 +260,13 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        TryAttackPlayer();
+        DetectPlayer();
         onDamaged?.Invoke();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag(enemyTag))
+        if (collision.collider.CompareTag("Enemy"))
         {
             TryStartBumpRetreat(collision.GetContact(0).normal);
         }
@@ -267,10 +274,17 @@ public class EnemyAI : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(enemyTag))
+        if (other.CompareTag("Enemy"))
         {
             Vector3 away = (transform.position - other.transform.position).normalized;
             TryStartBumpRetreat(away);
+        }
+
+        if (other.CompareTag("Player"))
+        {
+            DetectPlayer();
+            ChasePlayer();
+            TryAttackPlayer();
         }
     }
 

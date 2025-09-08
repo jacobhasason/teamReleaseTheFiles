@@ -54,7 +54,7 @@ GameObject:
   - component: {fileID: 2876239823135320113}
   m_Layer: 0
   m_Name: Enemy1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -137,9 +137,9 @@ MonoBehaviour:
   headTransform: {fileID: 7474353014687095198}
   attackDistance: 5
   attackCooldown: 1
+  attackHitDelay: 0.45
   aggroDuration: 8
   aggroOnDamage: 1
-  enemyTag: Enemy
   bumpRetreatDistance: 2
   bumpRetreatDuration: 0.8
   bumpCooldown: 0.5

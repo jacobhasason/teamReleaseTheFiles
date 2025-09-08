@@ -12,11 +12,11 @@ using UnityEngine.SceneManagement;
 public class WaveSpawner : MonoBehaviour
 {
     [Header("Enemy Settings")]
-    public GameObject EnemyPrefab;
+    public GameObject[] EnemyPrefab;
     public Transform[] SpawnPoints;
 
     [Header("Wave Settings")]
-    public int MaxEnemiesPerWave = 20;
+    public int MaxEnemiesPerWave = 30;
     public float TimeBetweenWaves = 5f;
 
     [Header("Player")]
@@ -25,9 +25,12 @@ public class WaveSpawner : MonoBehaviour
     [Header("UI & Feedback")]
     public DisplayMessage waveMessageManager;
 
-    private int waveCount = 0;
+    [HideInInspector]
+    public int waveCount = 0;
     private int enemiesAlive = 0;
     private bool isWaitingBetweenWaves = false;
+    [HideInInspector]
+    public int enemiesKilled = 0;
   
 
     public PlayerInputHandler playerInputHandler;
@@ -53,6 +56,8 @@ public class WaveSpawner : MonoBehaviour
         {
             OnWaveCompleted();
         }
+
+        enemiesKilled++;
     }
 
     // Called when a wave is finished
@@ -130,11 +135,22 @@ public class WaveSpawner : MonoBehaviour
         for (int i = 0; i < enemiesToSpawn; i++)
         {
             Transform spawnPoint = SpawnPoints[Random.Range(0, SpawnPoints.Length)];
-            GameObject enemy = Instantiate(EnemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            GameObject enemy = Instantiate(EnemyPrefab[Random.Range(0, EnemyPrefab.Length)], spawnPoint.position, spawnPoint.rotation);
 
             var health = enemy.GetComponent<Health>();
+            var controller = enemy.GetComponent<EnemyAI>();
+
             if (health != null)
             {
+                // Gradually Increase stats of enemies when max enemy count is reached
+                if (waveCount > MaxEnemiesPerWave)
+                {
+                    float gradInc = (waveCount - MaxEnemiesPerWave) / 2;
+                    controller.walkSpeed += gradInc;
+                    controller.runSpeed += gradInc;
+                    health.MaxHealth += 5;
+                }
+
                 bool hasDied = false;
                 health.OnDie += () =>
                 {
@@ -144,7 +160,7 @@ public class WaveSpawner : MonoBehaviour
                 };
             }
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
