@@ -43,6 +43,10 @@ namespace Unity.FPS.UI
         [Tooltip("Sharpness for the fill ratio movements")]
         public float AmmoFillMovementSharpness = 20f;
 
+        [Tooltip("Determines if ammo count should be ignored - (Melee weapon)")]
+        bool _ignoreAmmo;
+
+
         public int WeaponCounterIndex { get; set; }
 
         PlayerWeaponsManager m_PlayerWeaponsManager;
@@ -64,41 +68,62 @@ namespace Unity.FPS.UI
         public void Initialize(WeaponController weapon, int weaponIndex)
         {
             m_Weapon = weapon;
+            _ignoreAmmo = m_Weapon != null && m_Weapon.IsMelee;
+
             WeaponCounterIndex = weaponIndex;
             WeaponImage.sprite = weapon.WeaponIcon;
-            if (!weapon.HasPhysicalBullets)
+
+            // Hide bullets for melee
+            if (!weapon.HasPhysicalBullets || _ignoreAmmo)
                 BulletCounter.transform.parent.gameObject.SetActive(false);
             else
                 BulletCounter.text = weapon.GetCarriedPhysicalBullets().ToString();
 
             Reload.gameObject.SetActive(false);
+
             m_PlayerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
             DebugUtility.HandleErrorIfNullFindObject<PlayerWeaponsManager, AmmoCounter>(m_PlayerWeaponsManager, this);
 
             WeaponIndexText.text = (WeaponCounterIndex + 1).ToString();
 
-            FillBarColorChange.Initialize(1f, m_Weapon.GetAmmoNeededToShoot());
+            // For melee, force safe thresholds (full bar, no “low” state)
+            if (_ignoreAmmo)
+                FillBarColorChange.Initialize(1f, 0f); // zero “needed to shoot” so it never goes red
+            else
+                FillBarColorChange.Initialize(1f, m_Weapon.GetAmmoNeededToShoot());
+
         }
 
         void Update()
         {
-            float currenFillRatio = m_Weapon.CurrentAmmoRatio;
-            AmmoFillImage.fillAmount = Mathf.Lerp(AmmoFillImage.fillAmount, currenFillRatio,
+            float currentFillRatio = _ignoreAmmo ? 1f : m_Weapon.CurrentAmmoRatio;
+
+            // keep the bar full & skip red logic for melee
+            AmmoFillImage.fillAmount = Mathf.Lerp(AmmoFillImage.fillAmount, currentFillRatio,
                 Time.deltaTime * AmmoFillMovementSharpness);
 
-            BulletCounter.text = m_Weapon.GetCarriedPhysicalBullets().ToString();
+            if (!_ignoreAmmo && m_Weapon.HasPhysicalBullets)
+                BulletCounter.text = m_Weapon.GetCarriedPhysicalBullets().ToString();
 
             bool isActiveWeapon = m_Weapon == m_PlayerWeaponsManager.GetActiveWeapon();
 
-            CanvasGroup.alpha = Mathf.Lerp(CanvasGroup.alpha, isActiveWeapon ? 1f : UnselectedOpacity,
-                Time.deltaTime * 10);
-            transform.localScale = Vector3.Lerp(transform.localScale, isActiveWeapon ? Vector3.one : UnselectedScale,
-                Time.deltaTime * 10);
+            CanvasGroup.alpha = Mathf.Lerp(CanvasGroup.alpha, isActiveWeapon ? 1f : UnselectedOpacity, Time.deltaTime * 10);
+            transform.localScale = Vector3.Lerp(transform.localScale, isActiveWeapon ? Vector3.one : UnselectedScale, Time.deltaTime * 10);
             ControlKeysRoot.SetActive(!isActiveWeapon);
 
-            FillBarColorChange.UpdateVisual(currenFillRatio);
+            // Skip color-change logic for melee so it never goes red
+            if (_ignoreAmmo)
+                FillBarColorChange.UpdateVisual(1f);
+            else
+                FillBarColorChange.UpdateVisual(currentFillRatio);
 
-            Reload.gameObject.SetActive(m_Weapon.GetCarriedPhysicalBullets() > 0 && m_Weapon.GetCurrentAmmo() == 0 && m_Weapon.IsWeaponActive);
+            // Only show “Reload” for guns
+            Reload.gameObject.SetActive(!_ignoreAmmo &&
+                m_Weapon.HasPhysicalBullets &&
+                m_Weapon.GetCarriedPhysicalBullets() > 0 &&
+                m_Weapon.GetCurrentAmmo() == 0 &&
+                m_Weapon.IsWeaponActive);
+
         }
 
         void Destroy()
