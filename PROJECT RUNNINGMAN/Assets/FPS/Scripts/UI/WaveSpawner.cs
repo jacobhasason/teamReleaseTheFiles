@@ -8,6 +8,7 @@ using Unity.FPS.UI;
 
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class WaveSpawner : MonoBehaviour
 {
@@ -51,16 +52,17 @@ public class WaveSpawner : MonoBehaviour
         // If all enemies are killed display the wave reward menu
         if (enemiesAlive <= 0 && !isWaitingBetweenWaves)
         {
-            OnWaveCompleted();
+            StartCoroutine(CompleteWave());
         }
     }
 
     // Called when a wave is finished
-    public void OnWaveCompleted()
+    public async Task OnWaveCompleted()
     {
         Debug.Log("Wave completed! Loading reward menu...");
         InGameMenuManager.BlockInput = true;
-
+        Time.timeScale = 0f;
+        
         // Freeze gameplay
         Time.timeScale = 0f;
         if (playerInputHandler != null)
@@ -146,6 +148,12 @@ public class WaveSpawner : MonoBehaviour
 
             yield return new WaitForSeconds(0.2f);
         }
+    }
+    private IEnumerator CompleteWave()
+    {
+        Time.timeScale = .3f;
+        yield return new WaitForSeconds(.5f);
+        OnWaveCompleted();
     }
 
 
