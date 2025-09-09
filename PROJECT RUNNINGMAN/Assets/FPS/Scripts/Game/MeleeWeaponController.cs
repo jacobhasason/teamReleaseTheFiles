@@ -13,6 +13,7 @@ public class MeleeWeaponController : WeaponController
     public float Range = 2f;
     public float AttackRate = 1f;
     public float HitSoundPause = .08f;
+    public override bool IsMelee => true;
 
     [Header("Modifiers")]
     public float AdditionalDamage = 0f;
@@ -96,6 +97,7 @@ public class MeleeWeaponController : WeaponController
     // New method (for enemies)
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
+        
         float finalDamage = Damage + AdditionalDamage;
         WeaponAnimator?.SetTrigger("Swing");
         MeleeAudioSource.PlayOneShot(SwingSfx);

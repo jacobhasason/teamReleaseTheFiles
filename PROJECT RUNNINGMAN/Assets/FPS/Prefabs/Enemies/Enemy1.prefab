@@ -122,6 +122,7 @@ MonoBehaviour:
   waypoints:
   - {fileID: 3295212320475998622}
   - {fileID: 3877255651281624814}
+  - {fileID: 5546062974459780758}
   walkSpeed: 3.5
   runSpeed: 6
   waitTimeAtWaypoint: 2
@@ -137,7 +138,6 @@ MonoBehaviour:
   headTransform: {fileID: 7474353014687095198}
   attackDistance: 5
   attackCooldown: 1
-  attackHitDelay: 0.45
   aggroDuration: 8
   aggroOnDamage: 1
   bumpRetreatDistance: 2
@@ -151,6 +151,7 @@ MonoBehaviour:
       m_Calls: []
   viewGizmoColor: {r: 0, g: 0, b: 1, a: 1}
   attackGizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  health: {fileID: 0}
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
@@ -520,6 +521,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7474353014687095198}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1682285646933723848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5546062974459780758}
+  m_Layer: 0
+  m_Name: Waypoint2 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5546062974459780758
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1682285646933723848}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.69, y: 0, z: 5.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1529970709935162361}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1754763762087859465
 GameObject:
@@ -1219,6 +1251,7 @@ Transform:
   m_Children:
   - {fileID: 3295212320475998622}
   - {fileID: 3877255651281624814}
+  - {fileID: 5546062974459780758}
   m_Father: {fileID: 227953148592419932}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1410,7 +1443,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8866002012705257835}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -8.52, y: 0, z: 0}
+  m_LocalPosition: {x: -6.09, y: 0, z: 1.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

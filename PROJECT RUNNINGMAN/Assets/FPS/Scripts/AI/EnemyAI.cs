@@ -145,7 +145,9 @@ public class EnemyAI : MonoBehaviour
 
     void DetectPlayer()
     {
-        if (player == null) { playerInSight = false; return; }
+      /*  if (player == null) { 
+            playerInSight = false; return; 
+        }*/
 
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, player.position);

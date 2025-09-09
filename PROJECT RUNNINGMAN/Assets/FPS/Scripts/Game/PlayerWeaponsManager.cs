@@ -77,6 +77,8 @@ namespace Unity.FPS.Game
         public bool IsPointingAtEnemy { get; private set; }
         public int ActiveWeaponIndex { get; private set; }
 
+
+
         public UnityAction<WeaponController> OnSwitchedToWeapon;
         public UnityAction<WeaponController, int> OnAddedWeapon;
         public UnityAction<WeaponController, int> OnRemovedWeapon;
@@ -190,11 +192,11 @@ namespace Unity.FPS.Game
                 }
             }
             
-            // Drop Weapon
-            if (m_InputHandler.GetDropInputDown())
+            // Drop Weapon == Disabled for this implementation
+            /*if (m_InputHandler.GetDropInputDown())
             {
                 DropCurrentWeapon();
-            }
+            }*/
 
 
         }

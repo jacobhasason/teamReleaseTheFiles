@@ -179,10 +179,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponName: Hockey Stick
   PurchaseCost: 30
-  WeaponIcon: {fileID: 21300000, guid: 81c448d84d41b244a91a738f53252f9b, type: 3}
+  WeaponIcon: {fileID: 21300000, guid: 9e21e2c848a01c14583821b4db7e34cb, type: 3}
   CrosshairDataDefault:
-    CrosshairSprite: {fileID: 0}
-    CrosshairSize: 0
+    CrosshairSprite: {fileID: 21300000, guid: 2b5b80f3ebc88174a8c662e280fdb09c, type: 3}
+    CrosshairSize: 1
     CrosshairColor: {r: 0, g: 0, b: 0, a: 0}
   CrosshairDataTargetInSight:
     CrosshairSprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
