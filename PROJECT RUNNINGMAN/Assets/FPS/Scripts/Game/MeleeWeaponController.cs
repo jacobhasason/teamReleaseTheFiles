@@ -73,6 +73,7 @@ public class MeleeWeaponController : WeaponController
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
         float finalDamage = Damage + AdditionalMeleeDamage;
+        float attackTune;
         if (playerWeaponsManager)
         {
             MeleeWeaponAnimator?.SetTrigger("Swing");
@@ -85,17 +86,27 @@ public class MeleeWeaponController : WeaponController
 
             var health = hit.collider.GetComponentInParent<Health>();
             if (health != null)
-                health.TakeDamage(finalDamage, gameObject);
-
-            var kb_health = hit.collider.GetComponentInParent<KBHealth>();
-            if (kb_health != null)
+                if (finalDamage >= health.CurrentHealth)
+                {
+                    StartCoroutine(TunedSwingProc(1f, 1f));
+                    health.TakeDamage(finalDamage, gameObject);
+                    return;
+                }
+            if (finalDamage < health.CurrentHealth && finalDamage >= health.CurrentHealth - finalDamage)
             {
-                kb_health.TakeDamage(KBDamage, gameObject);
-                StartCoroutine(TunedSwingProc(1f, 1f));
+                StartCoroutine(TunedSwingProc(.93f, .9f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
             }
+            else
+            {
+                StartCoroutine(TunedSwingProc(.89f, .8f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
+            }
+            
         }
     }
-
 
 
     private IEnumerator SwingProc()
