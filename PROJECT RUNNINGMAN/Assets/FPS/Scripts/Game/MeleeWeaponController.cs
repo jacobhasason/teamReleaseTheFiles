@@ -1,10 +1,10 @@
 using System.Collections;
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.Audio;
 using Debug = UnityEngine.Debug;
-using System.Threading.Tasks;
 
 public class MeleeWeaponController : WeaponController
 {
@@ -13,10 +13,9 @@ public class MeleeWeaponController : WeaponController
     public float Range = 2f;
     public float AttackRate = 1f;
     public float HitSoundPause = .08f;
-    public override bool IsMelee => true;
 
     [Header("Modifiers")]
-    public float AdditionalDamage = 0f;
+    public float AdditionalMeleeDamage = 0f;
 
     float m_LastAttackTime;
 
@@ -27,48 +26,24 @@ public class MeleeWeaponController : WeaponController
     public AudioClip ToneSoundSfx;
     public AudioMixerGroup TonedSounds;
 
-    
-    [Tooltip("Hold right mouse (aim) to block.")]
-    public bool IsBlocking { get; private set; }
-
-    [Range(0f, 1f)]
-    public float BlockChance = 0.66f; // 66% of hits are blocked
-
-    private PlayerInputHandler _input;
-
+    Animator MeleeWeaponAnimator;
     AudioSource MeleeAudioSource;
     PlayerWeaponsManager playerWeaponsManager;
-
-
-
 
     void Start()
     {
         playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
+        MeleeWeaponAnimator = FindObjectOfType<Animator>();
 
         if (playerWeaponsManager == null)
             Debug.LogError("PlayerWeaponsManager not found in parent!");
         if (playerWeaponsManager?.WeaponCamera == null)
             Debug.LogError("WeaponCamera not assigned in PlayerWeaponsManager!");
 
-        playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
-        _input = FindObjectOfType<PlayerInputHandler>(); // grabs the input system
-
         MeleeAudioSource = GetComponent<AudioSource>();
         DebugUtility.HandleErrorIfNullGetComponent<AudioSource, MeleeWeaponController>(
             MeleeAudioSource, this, gameObject);
     }
-
-
-
-    void Update()
-    {
-        if (_input != null)
-        {
-            IsBlocking = _input.GetAimInputHeld(); // true while right click is held
-        }
-    }
-
 
     public override bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
     {
@@ -97,12 +72,13 @@ public class MeleeWeaponController : WeaponController
     // New method (for enemies)
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
-        
-        float finalDamage = Damage + AdditionalDamage;
-        WeaponAnimator?.SetTrigger("Swing");
+        float finalDamage = Damage + AdditionalMeleeDamage;
+        float attackTune;
+        if (playerWeaponsManager)
+        {
+            MeleeWeaponAnimator?.SetTrigger("Swing");
+        }
         MeleeAudioSource.PlayOneShot(SwingSfx);
-
-        Wait(); // Account for animation delay
 
         if (Physics.Raycast(attackOrigin.position, direction, out RaycastHit hit, Range))
         {
@@ -110,43 +86,27 @@ public class MeleeWeaponController : WeaponController
 
             var health = hit.collider.GetComponentInParent<Health>();
             if (health != null)
+                if (finalDamage >= health.CurrentHealth)
+                {
+                    StartCoroutine(TunedSwingProc(1f, 1f));
+                    health.TakeDamage(finalDamage, gameObject);
+                    return;
+                }
+            if (finalDamage < health.CurrentHealth && finalDamage >= health.CurrentHealth - finalDamage)
             {
-                
+                StartCoroutine(TunedSwingProc(.93f, .9f));
                 health.TakeDamage(finalDamage, gameObject);
+                return;
             }
-                
-
-            var kb_health = hit.collider.GetComponentInParent<KBHealth>();
-            if (kb_health != null)
+            else
             {
-                kb_health.TakeDamage(KBDamage, gameObject);
-                StartCoroutine(TunedSwingProc(1f, 1f));
+                StartCoroutine(TunedSwingProc(.89f, .8f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
             }
+            
         }
     }
-
-    public async Task Wait()
-    {
-        await Task.Delay(2000);
-    }
-
-    // Called by attackers when applying damage to the player.
-    // Returns true if the hit was blocked and should be ignored.
-    public bool TryBlockHit()
-    {
-        if (IsBlocking)
-        {
-            // 66% chance to succeed
-            if (Random.value < BlockChance)
-            {
-                Debug.Log("Attack blocked!");
-                return true; // muted damage
-            }
-        }
-        return false; // not blocked, apply damage normally
-    }
-
-
 
 
     private IEnumerator SwingProc()
