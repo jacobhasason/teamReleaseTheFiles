@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6019763896637231545
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6019763896637231551}
+  - component: {fileID: 6019763896637231550}
+  m_Layer: 0
+  m_Name: WaveSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6019763896637231551
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6019763896637231545}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.707, y: 1.68, z: 5.884}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6019763896637231550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6019763896637231545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327e9eedd0529cf44bbc9dd207b2fc3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyPrefab:
+  - {fileID: 604056857072905958, guid: 2e302f70caa11b34fae8291877c21d74, type: 3}
+  SpawnPoints:
+  - {fileID: 7943855538300728000, guid: 84940e1c35024fa4ca87de904bfe9d2b, type: 3}
+  - {fileID: 9027216068363838404, guid: 703bcdb8cfe14834690ca8ae21b38dab, type: 3}
+  - {fileID: 4622788011799449365, guid: 71826ce238fdc4944b902e43070d6c60, type: 3}
+  - {fileID: 6603006551706768076, guid: 9be2c92722857224495eb209ab421477, type: 3}
+  - {fileID: 7882445520989365241, guid: bde7a32a940011748a5818193379e31a, type: 3}
+  - {fileID: 7642803302623980054, guid: 8dcdee1dab5def540b350b2d364d67c9, type: 3}
+  - {fileID: 1115050761496238662, guid: 17e0f2490b70c35489b02b47b34ac540, type: 3}
+  - {fileID: 6789888729580051874, guid: 0359f811b47920b48a29c1cbe79beac2, type: 3}
+  - {fileID: 8282701037209869295, guid: 01caa8637a655c7498cffba9e8cb3a42, type: 3}
+  MaxEnemiesPerWave: 20
+  TimeBetweenWaves: 8
+  playerController: {fileID: 0}
+  waveMessageManager: {fileID: 0}
+  waveCount: 0
+  enemiesKilled: 0
+  playerInputHandler: {fileID: 0}
+  gameplayEventSystem: {fileID: 0}
+  inGameMenuManager: {fileID: 0}
