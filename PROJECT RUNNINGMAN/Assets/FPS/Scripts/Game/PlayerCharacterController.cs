@@ -88,10 +88,10 @@ namespace Unity.FPS.Game
         public float MinSpeedForFallDamage = 10f;
 
         [Tooltip("Fall speed for recieving th emaximum amount of fall damage")]
-        public float MaxSpeedForFallDamage = 30f;
+        public float MaxSpeedForFallDamage = 50f;
 
         [Tooltip("Damage recieved when falling at the mimimum speed")]
-        public float FallDamageAtMinSpeed = 10f;
+        public float FallDamageAtMinSpeed = 30f;
 
         [Tooltip("Damage recieved when falling at the maximum speed")]
         public float FallDamageAtMaxSpeed = 50f;

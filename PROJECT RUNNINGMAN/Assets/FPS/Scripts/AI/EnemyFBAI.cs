@@ -6,11 +6,12 @@ using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Health))]
-public class EnemyAI : MonoBehaviour
+public class EnemyFBAI : MonoBehaviour
 {
     [Header("Patrol Settings")]
     public Transform[] waypoints;
     public float walkSpeed = 3.5f;
+    public float chargeSpeed = 8.0f;
     public float runSpeed = 6f;
     public float swingSpeed = 0.5f;
     public float waitTimeAtWaypoint = 2f;
@@ -26,7 +27,14 @@ public class EnemyAI : MonoBehaviour
     public Transform headTransform;      // Raycast origin for attack
     public float attackDistance = 2f;
     public float attackCooldown = 1f;
+    public float chargeDamage = 5f;
+    public float jogDamage = 2f;
+    public float attack = 2f;
 
+    public float chargeCooldown = 5f;
+    public float chargeRundown = 3f;
+    private float waitCCooldown = 0.0f;
+    private float waitCRundown = 0.0f;
     [Header("Death & Events")]
     public UnityEvent onDamaged;
     public UnityEvent onDie;
@@ -38,21 +46,19 @@ public class EnemyAI : MonoBehaviour
     private NavMeshAgent agent;
     private Health health;
     private Transform player;
+    private Vector3 chargeDestination;
     private Animator EnemyAnimator;
     private int currentWaypoint = 0;
     private float waitTimer = 0f;
     private float lastAttackTime = -999f;
     private bool playerInSight = false;
+    private bool chargingPlayer = false;
     public GameObject DeathVfx;
     public Transform DeathVfxSpawnPoint;
     public GameObject LootPrefab;
     [Range(0, 1)]
     public float DropRate = 1f;
     public float DeathDuration = 0f; // Delay before destroying enemy
-
-    [Header("DeathSounds")]
-    public float deathSoundPause;
-    public AudioClip deathSoundSFX;
 
     [Header("Drops")]
     [SerializeField] private GameObject audiencePickupPrefab;
@@ -73,7 +79,6 @@ public class EnemyAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         health = GetComponent<Health>();
         EnemyAnimator = GetComponent<Animator>();
-        audioSource = GetComponent<AudioSource>();
 
         if (health == null)
         {
@@ -109,32 +114,37 @@ public class EnemyAI : MonoBehaviour
             agent.isStopped = true;
             return;
         }
-
-        DetectPlayer();
-        if (playerInSight)
+        if (chargingPlayer)
         {
-            ChasePlayer();
+            ChargePlayer();
             TryAttackPlayer();
         }
         else
         {
-            Patrol();
+            DetectPlayer();
+            if (playerInSight)
+            {
+                ChasePlayer();
+                TryAttackPlayer();
+            }
+            else
+            {
+                Patrol();
+            }
         }
     }
 
 
     void DetectPlayer()
     {
-        if (player == null || EnemyAnimator == null) return;
+        if (player == null) return;
 
         Vector3 dirToPlayer = (player.position - transform.position).normalized;
         float distance = Vector3.Distance(transform.position, player.position);
         playerInSight = false;
-        if (distance > 2.5f * viewRadius && Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, 2f * meleeWeapon.Range))
+        if (distance > 2.5f * viewRadius && Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, 2f * attackDistance))
         {
-            agent.isStopped = true;
             EnemyAnimator?.SetTrigger("GoalIdle");
-
             
         }
         if (distance <= viewRadius && Vector3.Angle(transform.forward, dirToPlayer) <= viewAngle / 2)
@@ -142,7 +152,6 @@ public class EnemyAI : MonoBehaviour
             if (!Physics.Raycast(transform.position, dirToPlayer, distance, obstacleMask))
             {
                 playerInSight = true;
-                agent.isStopped = false;
                 EnemyAnimator?.SetTrigger("Jog");
             }
         }
@@ -173,16 +182,36 @@ public class EnemyAI : MonoBehaviour
 
     void ChasePlayer()
     {
-        if (player == null || EnemyAnimator == null) return;
 
+        if (player == null || EnemyAnimator == null) return;
         agent.speed = runSpeed;
         agent.isStopped = false;
         agent.SetDestination(player.position);
+        if (waitCCooldown >= chargeCooldown)
+        {
+            waitCRundown = 0.0f;
+            chargingPlayer = true;
+            chargeDestination = player.position;
+            EnemyAnimator?.SetTrigger("FBTackle");
+        }
+    }
+    void ChargePlayer()
+    {
+        if (player == null || EnemyAnimator == null) return;
+        agent.speed = chargeSpeed;
+        agent.isStopped = false;
+        agent.SetDestination(chargeDestination);
+        if (waitCRundown >= chargeRundown)
+        {
+            waitCCooldown = 0.0f;
+            chargingPlayer = false;
+            EnemyAnimator?.SetTrigger("Jog");
+        }
     }
 
     void TryAttackPlayer()
     {
-        if (player == null || meleeWeapon == null || EnemyAnimator == null) return;
+        if (player == null || EnemyAnimator == null) return;
 
         float distance = Vector3.Distance(headTransform.position, player.position);
         if (distance <= attackDistance && Time.time - lastAttackTime >= attackCooldown)
@@ -195,25 +224,26 @@ public class EnemyAI : MonoBehaviour
             Vector3 dirToPlayer = (targetPoint - headTransform.position).normalized;
 
             // Debug ray so you can see in Scene view where it's aiming
-            Debug.DrawRay(headTransform.position, dirToPlayer * meleeWeapon.Range, Color.red, 1f);
+            Debug.DrawRay(headTransform.position, dirToPlayer * attackDistance, Color.red, 1f);
             Debug.Log($"Enemy attacking player. Distance: {distance}, Dir: {dirToPlayer}");
 
-            if (Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, meleeWeapon.Range))
+            if (Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, attackDistance))
             {
                 var health = hit.collider.GetComponentInParent<Health>();
                 if (health != null)
                 {
-                    health.TakeDamage(meleeWeapon.Damage, gameObject);
+                    if (chargingPlayer)
+                    {
+                        health.TakeDamage(chargeDamage, gameObject);
+                    }
+                    else
+                    {
+                        health.TakeDamage(jogDamage, gameObject);
+                    }
                 }
             }
 
-            // Perform the melee attack animation/audio/etc
-            meleeWeapon.PerformAttack(headTransform, dirToPlayer);
-            EnemyAnimator?.SetTrigger("Strike");
-        }
-        else
-        {
-            EnemyAnimator?.SetTrigger("Jog");
+            
         }
     }
 
@@ -234,11 +264,6 @@ public class EnemyAI : MonoBehaviour
         {
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
-        }
-        // Death SFX (NEW)
-        if (deathSoundSFX != null && audioSource != null)
-        {
-            StartCoroutine(DeathProc());
         }
 
         // Audience Favor drop
@@ -272,14 +297,6 @@ public class EnemyAI : MonoBehaviour
         {
             Gizmos.color = attackGizmoColor;
             Gizmos.DrawWireSphere(headTransform.position, attackDistance);
-        }
-    }
-    private IEnumerator DeathProc()
-    {
-        if (audioSource != null)
-        {
-            yield return new WaitForSeconds(deathSoundPause);
-            audioSource.PlayOneShot(deathSoundSFX);
         }
     }
 }
