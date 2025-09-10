@@ -201,6 +201,16 @@ PrefabInstance:
       propertyPath: WeaponName
       value: Fencing Sword
       objectReference: {fileID: 0}
+    - target: {fileID: 1545161497085320369, guid: bb375981541da5341a91eef8add25718,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.097
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667134817439743247, guid: bb375981541da5341a91eef8add25718,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: fa2da21c65c10154382de11df789cee9, type: 2}
     - target: {fileID: 4913762708382688004, guid: bb375981541da5341a91eef8add25718,
         type: 3}
       propertyPath: m_LocalPosition.y
