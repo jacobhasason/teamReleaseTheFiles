@@ -43,11 +43,14 @@ public class EnemyAI : MonoBehaviour
     [Header("Attack Settings")]
     public MeleeWeaponController meleeWeapon;
     public Transform headTransform;          // Raycast origin for attack
-    public float attackDistance = 2f;
+    public float attackDistance = 1.1f;
     public float attackCooldown = 1f;
 
     // Small per-enemy random offset so enemies don’t attack on the same frame
     private float _attackJitter;
+
+    // amount of time that must pass after hit-stun is applied after which it can be applied again  
+    private float _stunStun = .6f;
 
     // Swing resume timer (no coroutine)
     private float _resumeAt = -1f;
@@ -218,7 +221,7 @@ public class EnemyAI : MonoBehaviour
         {
             Patrol();
             // animator jogging bool
-            //anim?.SetBool("IsJogging", false);
+            anim?.SetBool("Jog", false);
         }
     }
 
@@ -244,7 +247,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     playerInSight = true;
                     agent.isStopped = false;
-                    //anim?.SetBool("IsJogging", true);
+                    anim?.SetBool("Jog", true);
                 }
             }
         }
@@ -256,7 +259,10 @@ public class EnemyAI : MonoBehaviour
 
         agent.speed = walkSpeed;
         agent.isStopped = false;
-
+        anim?.SetBool("Jog", false);
+        anim?.SetBool("Walk", true);
+        anim?.SetBool("Idle", false);
+        anim?.SetBool("Strike", false);
         if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
         {
             if (waitTimer <= 0f)
@@ -269,6 +275,8 @@ public class EnemyAI : MonoBehaviour
             {
                 agent.isStopped = true;
                 waitTimer -= Time.deltaTime;
+                anim?.SetBool("Walk", false);
+                anim?.SetBool("Idle", true);
             }
         }
     }
@@ -279,6 +287,10 @@ public class EnemyAI : MonoBehaviour
         if (player != null) lastKnownPlayerPos = dest;
 
         // Throttle SetDestination calls
+        anim?.SetBool("Jog", true);
+        anim?.SetBool("Walk", false);
+        anim?.SetBool("Idle", false);
+        anim?.SetBool("Strike", false);
         if (Time.time >= _nextRepathTime || (dest - _lastDest).sqrMagnitude >= repathDistance * repathDistance)
         {
             agent.speed = runSpeed;
@@ -308,6 +320,10 @@ public class EnemyAI : MonoBehaviour
         agent.speed = swingSpeed;
         agent.isStopped = true;
 
+        anim?.SetBool("Jog", false);
+        anim?.SetBool("Walk", false);
+        anim?.SetBool("Idle", false);
+        
         Vector3 targetPoint = player.position + Vector3.up * 1.0f;
         Vector3 dirToPlayer = (targetPoint - headTransform.position).normalized;
 
@@ -345,7 +361,7 @@ public class EnemyAI : MonoBehaviour
 
         // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
-        anim?.SetTrigger("Strike");
+        anim?.SetBool("Strike", true);
 
         // Resume movement after a short delay (no coroutine)
         _resumeAt = Time.time + 0.3f; // tune to match strike anim
@@ -355,6 +371,11 @@ public class EnemyAI : MonoBehaviour
 
     public void OnDamaged(float damage)
     {
+        anim?.SetBool("Strike", false);
+        anim?.SetBool("Jog", false);
+        anim?.SetBool("Idle", false);
+        anim?.SetBool("Walk", false);
+
         if (aggroOnDamage)
         {
             isAggro = true;

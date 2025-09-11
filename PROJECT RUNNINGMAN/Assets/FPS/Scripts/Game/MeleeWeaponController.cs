@@ -109,18 +109,25 @@ public class MeleeWeaponController : WeaponController
             StartCoroutine(SwingProc());
 
             var health = hit.collider.GetComponentInParent<Health>();
+            
             if (health != null)
+                if (finalDamage >= health.CurrentHealth)
+                {
+                    StartCoroutine(TunedSwingProc(1f, 1f));
+                    health.TakeDamage(finalDamage, gameObject);
+                    return;
+                }
+            if (finalDamage < health.CurrentHealth && finalDamage >= health.CurrentHealth - finalDamage)
             {
-                
+                StartCoroutine(TunedSwingProc(.93f, .9f));
                 health.TakeDamage(finalDamage, gameObject);
+                return;
             }
-                
-
-            var kb_health = hit.collider.GetComponentInParent<KBHealth>();
-            if (kb_health != null)
+            else
             {
-                kb_health.TakeDamage(KBDamage, gameObject);
-                StartCoroutine(TunedSwingProc(1f, 1f));
+                StartCoroutine(TunedSwingProc(.89f, .8f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
             }
         }
     }

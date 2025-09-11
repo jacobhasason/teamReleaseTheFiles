@@ -202,6 +202,8 @@ MonoBehaviour:
   runSpeed: 6
   swingSpeed: 0.5
   waitTimeAtWaypoint: 2
+  repathInterval: 0.2
+  repathDistance: 0.75
   viewRadius: 15
   viewAngle: 90
   playerMask:
@@ -210,10 +212,16 @@ MonoBehaviour:
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1
+  losCheckInterval: 0.2
   meleeWeapon: {fileID: 5596128847113748887}
   headTransform: {fileID: 7474353014687095198}
   attackDistance: 5
   attackCooldown: 1
+  aggroDuration: 8
+  aggroOnDamage: 1
+  bumpRetreatDistance: 2
+  bumpRetreatDuration: 0.8
+  bumpCooldown: 0.5
   onDamaged:
     m_PersistentCalls:
       m_Calls: []
@@ -225,18 +233,18 @@ MonoBehaviour:
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
-  LootPrefab: {fileID: 5444484267455682382, guid: 250ce8930ddccb548a26af523c1a397e,
-    type: 3}
   DropRate: 1
   DeathDuration: 0
-  deathSoundPause: 0.01
-  deathSoundSFX: {fileID: 8300000, guid: dc3d6c8b936204a4dac84db860f40734, type: 3}
   audiencePickupPrefab: {fileID: 7825903155294947248, guid: 7e738761834870242a9f59ac37498247,
     type: 3}
   corporatePickupPrefab: {fileID: 7825903155294947248, guid: 94c0752532b2fb146896c6241580ece0,
     type: 3}
   currencyManager: {fileID: 0}
+  deathSoundPause: 0.01
+  deathSoundSFX: {fileID: 8300000, guid: dc3d6c8b936204a4dac84db860f40734, type: 3}
   HitSFX: {fileID: 8300000, guid: 53d2238f4c4b2aa4f8e559c7af9e0126, type: 3}
+  slowMoDuration: 0.35
+  slowMoScale: 0.2
 --- !u!195 &334220005847167942
 NavMeshAgent:
   m_ObjectHideFlags: 0
