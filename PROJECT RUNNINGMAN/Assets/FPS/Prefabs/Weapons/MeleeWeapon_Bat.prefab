@@ -176,7 +176,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -4165159243522768807, guid: fcc71635aab95ff4fbdf1880bf2afa2f,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -275,10 +275,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WeaponName: Bat
   PurchaseCost: 10
-  WeaponIcon: {fileID: 0}
+  WeaponIcon: {fileID: 21300000, guid: 39072bde4f4eeb6428d927f1cb1dc73e, type: 3}
   CrosshairDataDefault:
-    CrosshairSprite: {fileID: 0}
-    CrosshairSize: 0
+    CrosshairSprite: {fileID: 21300000, guid: 2b5b80f3ebc88174a8c662e280fdb09c, type: 3}
+    CrosshairSize: 1
     CrosshairColor: {r: 0, g: 0, b: 0, a: 0}
   CrosshairDataTargetInSight:
     CrosshairSprite: {fileID: 0}
@@ -295,7 +295,7 @@ MonoBehaviour:
   AimZoomRatio: 1
   AimOffset: {x: 0, y: 0, z: 0}
   AdditionalDamage: 0
-  AutomaticReload: 1
+  AutomaticReload: 0
   HasPhysicalBullets: 0
   ClipSize: 30
   ShellCasing: {fileID: 0}
@@ -304,7 +304,7 @@ MonoBehaviour:
   ShellPoolSize: 1
   AmmoReloadRate: 1
   AmmoReloadDelay: 2
-  MaxAmmo: 8
+  MaxAmmo: 1
   AutomaticReleaseOnCharged: 0
   MaxChargeDuration: 2
   AmmoUsedOnStartCharge: 1
@@ -320,17 +320,18 @@ MonoBehaviour:
   ContinuousShootStartSfx: {fileID: 0}
   ContinuousShootLoopSfx: {fileID: 0}
   ContinuousShootEndSfx: {fileID: 0}
-  Damage: 40
+  Damage: 25
   KBDamage: 1
   Range: 2
   AttackRate: 1
   HitSoundPause: 0.07
-  AdditionalMeleeDamage: 0
+  AdditionalDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
   ToneSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
   TonedSounds: {fileID: 0}
+  BlockChance: 0.5
 --- !u!1 &5246846884745188636
 GameObject:
   m_ObjectHideFlags: 0
