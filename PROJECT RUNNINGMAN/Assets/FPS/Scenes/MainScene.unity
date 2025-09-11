@@ -6663,7 +6663,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyPrefab:
   - {fileID: 604056857072905958, guid: 2e302f70caa11b34fae8291877c21d74, type: 3}
-  - {fileID: 604056857072905958, guid: 22ca49d0959ac2a48bdc302fd1501615, type: 3}
   SpawnPoints:
   - {fileID: 1385438403}
   - {fileID: 1065158921}
@@ -37460,6 +37459,11 @@ PrefabInstance:
         type: 3}
       propertyPath: FallDamageAtMaxSpeed
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 814417836257332542, guid: 761cdc9e4e883334cbdcea062d0befa7,
+        type: 3}
+      propertyPath: FallDamageAtMinSpeed
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1360575517897679518, guid: 761cdc9e4e883334cbdcea062d0befa7,
         type: 3}
