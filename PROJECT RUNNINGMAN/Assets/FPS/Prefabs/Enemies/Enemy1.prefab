@@ -229,6 +229,7 @@ MonoBehaviour:
   slowMoDuration: 0.35
   slowMoScale: 0.2
   SlowMoEnabled: 1
+  animParamIsJogging: IsJogging
 --- !u!195 &334220005847167942
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -347,7 +348,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604056857072905958}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 7ca6070fd0ca734458097a810e5cd890, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 7ea33e10ff6a2294c9a5b215c0173b27, type: 3}
   m_Controller: {fileID: 9100000, guid: 6a3478b552f85bd47b36f9771c487122, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
