@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -46,7 +46,7 @@ public class EnemyAI : MonoBehaviour
     public float attackDistance = 2f;
     public float attackCooldown = 1f;
 
-    // Small per-enemy random offset so enemies don�t attack on the same frame
+    // Small per-enemy random offset so enemies don’t attack on the same frame
     private float _attackJitter;
 
     // Swing resume timer (no coroutine)
@@ -97,6 +97,12 @@ public class EnemyAI : MonoBehaviour
     public float slowMoDuration = 0.35f;
     [Tooltip("Time.timeScale during slow motion.")]
     [Range(0.01f, 1f)] public float slowMoScale = 0.2f;
+    public bool SlowMoEnabled = true;
+
+    // --------- ANIMATOR ----------
+    [Header("Animator Params")]
+    public string animParamIsJogging = "IsJogging"; // ✅ must match Animator Controller
+    private int _hashIsJogging;
 
     // --------- INTERNALS ----------
     private NavMeshAgent agent;
@@ -122,7 +128,14 @@ public class EnemyAI : MonoBehaviour
     private static int s_aliveCount = 0;
     private bool countedAlive = false;
 
+    // --- NEW: visibility/animation pausing ---
+    private Renderer[] _renderers;
+    private bool _aiPausedByVisibility = false;
+
+    private static bool s_slowMoActive = false; // guard slow-mo stacking
+
     private bool IsDead => health != null && health.CurrentHealth <= 0;
+
 
     // -------------------- LIFECYCLE --------------------
 
@@ -130,7 +143,15 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         health = GetComponent<Health>();
-        anim = GetComponent<Animator>();
+
+        // ✅ get Animator from self or children
+        anim = GetComponentInChildren<Animator>(true);
+        if (anim)
+        {
+            anim.cullingMode = AnimatorCullingMode.CullCompletely;
+            _hashIsJogging = Animator.StringToHash(animParamIsJogging);
+        }
+
         audioSource = GetComponent<AudioSource>();
 
         if (meleeWeapon == null)
@@ -148,7 +169,15 @@ public class EnemyAI : MonoBehaviour
 
         // Attack jitter between 0 and 0.2s
         _attackJitter = Random.Range(0f, 0.2f);
+
+        // --- Visibility setup ---
+        _renderers = GetComponentsInChildren<Renderer>(true);
+        foreach (var r in _renderers)
+        {
+            if (r is SkinnedMeshRenderer smr) smr.updateWhenOffscreen = false;
+        }
     }
+
 
     private void Start()
     {
@@ -186,6 +215,17 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
+        // --- Visibility gate: stop anim + AI when not visible ---
+        bool visible = IsVisible();
+        if (anim && anim.enabled != visible) anim.enabled = visible;
+        _aiPausedByVisibility = !visible;
+        if (_aiPausedByVisibility)
+        {
+            // Keep the agent stopped while off-screen to avoid extra path updates
+            if (agent && agent.enabled && agent.isOnNavMesh) agent.isStopped = true;
+            return;
+        }
+
         // Resume after swing (no coroutine)
         if (_resumeAt > 0f && Time.time >= _resumeAt)
         {
@@ -213,13 +253,23 @@ public class EnemyAI : MonoBehaviour
         {
             ChasePlayerThrottled();
             TryAttackPlayerThrottled();
+            anim?.SetBool("IsJogging", true);
         }
         else
         {
             Patrol();
-            // animator jogging bool
-            //anim?.SetBool("IsJogging", false);
+            anim?.SetBool("IsJogging", false);
         }
+    }
+
+
+        // --- cheap visibility check across all child renderers ---
+        private bool IsVisible()
+    {
+        if (_renderers == null || _renderers.Length == 0) return true; // fail open
+        for (int i = 0; i < _renderers.Length; i++)
+            if (_renderers[i] && _renderers[i].isVisible) return true;
+        return false;
     }
 
     // -------------------- SENSING / LOCOMOTION --------------------
@@ -243,8 +293,7 @@ public class EnemyAI : MonoBehaviour
                 if (!Physics.Raycast(transform.position, dirNorm, dist, obstacleMask))
                 {
                     playerInSight = true;
-                    agent.isStopped = false;
-                    //anim?.SetBool("IsJogging", true);
+                    if (agent && agent.enabled && agent.isOnNavMesh) agent.isStopped = false;
                 }
             }
         }
@@ -327,7 +376,7 @@ public class EnemyAI : MonoBehaviour
                 if (targetMelee != null && targetMelee.TryBlockHit())
                 {
                     blocked = true; // muted damage
-                    Debug.Log("Enemy attack was blocked.");
+                    // Debug.Log("Enemy attack was blocked.");
                 }
             }
 
@@ -345,7 +394,7 @@ public class EnemyAI : MonoBehaviour
 
         // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
-        anim?.SetTrigger("Strike");
+        if (anim) anim.SetTrigger("Strike");
 
         // Resume movement after a short delay (no coroutine)
         _resumeAt = Time.time + 0.3f; // tune to match strike anim
@@ -462,9 +511,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         // SLOW-MO if this was the LAST enemy
-        if (s_aliveCount == 0)    // this enemy was last alive at the moment of death
+        if (SlowMoEnabled && s_aliveCount == 0)
         {
-            StartCoroutine(PlayLastKillSlowMo());
+            StartCoroutine(PlayLastKillSlowMoSafe());
         }
 
         onDie?.Invoke();
@@ -481,18 +530,26 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayLastKillSlowMo()
+    // --- SAFE SLOW-MO: single-shot + guaranteed restore ---
+    private IEnumerator PlayLastKillSlowMoSafe()
     {
+        if (s_slowMoActive) yield break;
+        s_slowMoActive = true;
+
         float oldScale = Time.timeScale;
         float oldFixed = Time.fixedDeltaTime;
-
-        Time.timeScale = slowMoScale;
-        Time.fixedDeltaTime = oldFixed * slowMoScale;
-
-        yield return new WaitForSecondsRealtime(slowMoDuration);
-
-        Time.timeScale = oldScale;
-        Time.fixedDeltaTime = oldFixed;
+        try
+        {
+            Time.timeScale = Mathf.Clamp(slowMoScale, 0.01f, 1f);
+            Time.fixedDeltaTime = oldFixed * Time.timeScale;
+            yield return new WaitForSecondsRealtime(slowMoDuration);
+        }
+        finally
+        {
+            Time.timeScale = oldScale;
+            Time.fixedDeltaTime = oldFixed;
+            s_slowMoActive = false;
+        }
     }
 
     // -------------------- GIZMOS --------------------
