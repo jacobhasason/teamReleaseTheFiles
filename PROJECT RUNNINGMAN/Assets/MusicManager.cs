@@ -1,38 +1,43 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class MusicManager : MonoBehaviour
 {
-    public AudioClip[] musicTracks;   // assign your music files in Inspector
+    [Header("Assign your songs here")]
+    public AudioClip[] songs;
+
     private AudioSource audioSource;
 
     void Awake()
     {
         audioSource = GetComponent<AudioSource>();
+        audioSource.loop = false; // important: don't loop a single track forever
+    }
 
-        if (musicTracks.Length > 0)
+    void Start()
+    {
+        PlayRandomSong();
+    }
+
+    void Update()
+    {
+        // If nothing is playing, pick another song
+        if (!audioSource.isPlaying && songs.Length > 0)
         {
-            // pick a random index
-            int randomIndex = Random.Range(0, musicTracks.Length);
-            PlayTrack(randomIndex);
+            PlayRandomSong();
         }
     }
 
-    public void PlayTrack(int index)
+    void PlayRandomSong()
     {
-        if (index >= 0 && index < musicTracks.Length)
+        if (songs == null || songs.Length == 0)
         {
-            audioSource.clip = musicTracks[index];
-            audioSource.loop = true; // keep looping
-            audioSource.Play();
+            Debug.LogWarning("No songs assigned to RandomMusicPlayer.");
+            return;
         }
-    }
 
-    public void PlayRandomTrack()
-    {
-        if (musicTracks.Length > 0)
-        {
-            int randomIndex = Random.Range(0, musicTracks.Length);
-            PlayTrack(randomIndex);
-        }
+        int randomIndex = Random.Range(0, songs.Length);
+        audioSource.clip = songs[randomIndex];
+        audioSource.Play();
     }
 }

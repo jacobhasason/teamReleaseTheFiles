@@ -4,6 +4,7 @@ using Unity.FPS.Gameplay;
 using UnityEngine;
 using UnityEngine.Audio;
 using Debug = UnityEngine.Debug;
+using System.Threading.Tasks;
 
 public class MeleeWeaponController : WeaponController
 {
@@ -12,6 +13,7 @@ public class MeleeWeaponController : WeaponController
     public float Range = 2f;
     public float AttackRate = 1f;
     public float HitSoundPause = .08f;
+    public override bool IsMelee => true;
 
     [Header("Modifiers")]
     public float AdditionalDamage = 0f;
@@ -39,6 +41,7 @@ public class MeleeWeaponController : WeaponController
 
 
 
+
     void Start()
     {
         playerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
@@ -55,6 +58,8 @@ public class MeleeWeaponController : WeaponController
         DebugUtility.HandleErrorIfNullGetComponent<AudioSource, MeleeWeaponController>(
             MeleeAudioSource, this, gameObject);
     }
+
+
 
     void Update()
     {
@@ -92,25 +97,44 @@ public class MeleeWeaponController : WeaponController
     // New method (for enemies)
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
+        
         float finalDamage = Damage + AdditionalDamage;
         WeaponAnimator?.SetTrigger("Swing");
         MeleeAudioSource.PlayOneShot(SwingSfx);
+
+        Wait(); // Account for animation delay
 
         if (Physics.Raycast(attackOrigin.position, direction, out RaycastHit hit, Range))
         {
             StartCoroutine(SwingProc());
 
             var health = hit.collider.GetComponentInParent<Health>();
+            
             if (health != null)
-                health.TakeDamage(finalDamage, gameObject);
-
-            var kb_health = hit.collider.GetComponentInParent<KBHealth>();
-            if (kb_health != null)
+                if (finalDamage >= health.CurrentHealth)
+                {
+                    StartCoroutine(TunedSwingProc(1f, 1f));
+                    health.TakeDamage(finalDamage, gameObject);
+                    return;
+                }
+            if (finalDamage < health.CurrentHealth && finalDamage >= health.CurrentHealth - finalDamage)
             {
-                kb_health.TakeDamage(KBDamage, gameObject);
-                StartCoroutine(TunedSwingProc(1f, 1f));
+                StartCoroutine(TunedSwingProc(.93f, .9f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
+            }
+            else
+            {
+                StartCoroutine(TunedSwingProc(.89f, .8f));
+                health.TakeDamage(finalDamage, gameObject);
+                return;
             }
         }
+    }
+
+    public async Task Wait()
+    {
+        await Task.Delay(2000);
     }
 
     // Called by attackers when applying damage to the player.
