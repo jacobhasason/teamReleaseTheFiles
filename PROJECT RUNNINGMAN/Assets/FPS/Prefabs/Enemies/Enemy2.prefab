@@ -194,8 +194,8 @@ MonoBehaviour:
   waitTimeAtWaypoint: 2
   repathInterval: 0.2
   repathDistance: 0.75
-  viewRadius: 15
-  viewAngle: 90
+  viewRadius: 50
+  viewAngle: 360
   playerMask:
     serializedVersion: 2
     m_Bits: 64
