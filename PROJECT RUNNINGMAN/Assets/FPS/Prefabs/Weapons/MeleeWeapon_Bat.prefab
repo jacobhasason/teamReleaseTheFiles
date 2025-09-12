@@ -331,7 +331,7 @@ MonoBehaviour:
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
   ToneSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
   TonedSounds: {fileID: 0}
-  BlockChance: 1
+  BlockChance: 0.5
 --- !u!1 &5246846884745188636
 GameObject:
   m_ObjectHideFlags: 0
