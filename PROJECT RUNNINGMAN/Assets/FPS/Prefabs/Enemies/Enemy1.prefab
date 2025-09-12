@@ -229,9 +229,9 @@ MonoBehaviour:
   slowMoDuration: 0.35
   slowMoScale: 0.2
   SlowMoEnabled: 1
-  animParamIsJogging: IsJogging
+  animParamIsJogging: Jog
   animParamIsWalking: Walk
-  animParamIsIdling: Idle
+  animParamIsIdling: BBIdle
   animParamIsStrike: Strike
 --- !u!195 &334220005847167942
 NavMeshAgent:
