@@ -188,7 +188,7 @@ MonoBehaviour:
   repathInterval: 0.2
   repathDistance: 0.75
   viewRadius: 50
-  viewAngle: 360
+  viewAngle: 300
   playerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -198,9 +198,9 @@ MonoBehaviour:
   losCheckInterval: 0.2
   meleeWeapon: {fileID: 5596128847113748887}
   headTransform: {fileID: 7474353014687095198}
-  attackDistance: 5
+  attackDistance: 4
   attackCooldown: 1
-  aggroDuration: 8
+  aggroDuration: 6
   aggroOnDamage: 1
   bumpRetreatDistance: 2
   bumpRetreatDuration: 0.8
@@ -230,6 +230,9 @@ MonoBehaviour:
   slowMoScale: 0.2
   SlowMoEnabled: 1
   animParamIsJogging: IsJogging
+  animParamIsWalking: Walk
+  animParamIsIdling: Idle
+  animParamIsStrike: Strike
 --- !u!195 &334220005847167942
 NavMeshAgent:
   m_ObjectHideFlags: 0

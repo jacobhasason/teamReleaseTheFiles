@@ -101,8 +101,14 @@ public class EnemyAI : MonoBehaviour
 
     // --------- ANIMATOR ----------
     [Header("Animator Params")]
-    public string animParamIsJogging = "IsJogging"; // ✅ must match Animator Controller
+    public string animParamIsJogging = "Jog"; // ✅ must match Animator Controller
     private int _hashIsJogging;
+    public string animParamIsWalking = "Walk"; // ✅ must match Animator Controller
+    private int _hashIsWalking;
+    public string animParamIsIdling = "BBIdle"; // ✅ must match Animator Controller
+    private int _hashIsIdling;
+    public string animParamIsStrike = "Strike"; // ✅ must match Animator Controller
+    private int _hashIsStriking;
 
     // --------- INTERNALS ----------
     private NavMeshAgent agent;
@@ -229,9 +235,11 @@ public class EnemyAI : MonoBehaviour
         // Resume after swing (no coroutine)
         if (_resumeAt > 0f && Time.time >= _resumeAt)
         {
+
             agent.isStopped = false;
             agent.speed = _restoreSpeed > 0f ? _restoreSpeed : runSpeed;
             _resumeAt = -1f;
+            if (anim) anim?.SetBool("Strike", false);
         }
 
         DetectPlayerThrottled();
@@ -252,13 +260,16 @@ public class EnemyAI : MonoBehaviour
         if (isAggro || playerInSight)
         {
             ChasePlayerThrottled();
-            TryAttackPlayerThrottled();
-            anim?.SetBool("IsJogging", true);
+            float distance = Vector3.Distance(headTransform.position, player.position);
+            if (attackDistance >= distance) TryAttackPlayerThrottled();
+            if (anim) anim?.SetBool("Jog", true);
+            if (anim) anim?.SetBool("Walk", false);
         }
         else
         {
             Patrol();
-            anim?.SetBool("IsJogging", false);
+            if (anim) anim?.SetBool("Jog", false);
+            if (anim) anim?.SetBool("Walk", true);
         }
     }
 
@@ -394,7 +405,7 @@ public class EnemyAI : MonoBehaviour
 
         // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
-        if (anim) anim.SetTrigger("Strike");
+        if (anim) anim?.SetBool("Strike", true);
 
         // Resume movement after a short delay (no coroutine)
         _resumeAt = Time.time + 0.3f; // tune to match strike anim
