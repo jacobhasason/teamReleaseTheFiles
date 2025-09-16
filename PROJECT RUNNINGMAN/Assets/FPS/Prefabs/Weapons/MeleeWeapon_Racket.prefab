@@ -139,7 +139,6 @@ GameObject:
   - component: {fileID: 7157015506545718078}
   - component: {fileID: 4393004934804014311}
   - component: {fileID: 8783490078255370069}
-  - component: {fileID: 4191542311575285323}
   m_Layer: 10
   m_Name: MeleeWeapon_Racket
   m_TagString: Untagged
@@ -326,34 +325,12 @@ MonoBehaviour:
   Range: 1.5
   AttackRate: 1.5
   HitSoundPause: 0.07
-  AdditionalDamage: 0
+  AdditionalMeleeDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
   ToneSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
   TonedSounds: {fileID: 0}
-  BlockChance: 0.9
---- !u!95 &4191542311575285323
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7096511061945105766}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: fa2da21c65c10154382de11df789cee9, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7733336267567488170
 GameObject:
   m_ObjectHideFlags: 0
