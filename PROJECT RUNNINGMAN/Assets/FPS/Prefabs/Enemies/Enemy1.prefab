@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3627025833524695565}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 6802141720799573275}
   - component: {fileID: 1001661044974119652}
   - component: {fileID: 4427530500896830096}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ImageBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,7 +117,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 227953148592419932}
-  - component: {fileID: 334220005847167945}
   - component: {fileID: 334220005847167944}
   - component: {fileID: 8600720535562562718}
   - component: {fileID: 334220005847167942}
@@ -128,7 +127,7 @@ GameObject:
   - component: {fileID: 5387527105081164854}
   - component: {fileID: 5103119163402167119}
   - component: {fileID: 2876239823135320113}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -153,22 +152,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &334220005847167945
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 604056857072905958}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!136 &334220005847167944
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -198,22 +181,30 @@ MonoBehaviour:
   waypoints:
   - {fileID: 3295212320475998622}
   - {fileID: 3877255651281624814}
-  walkSpeed: 3.5
-  runSpeed: 6
-  swingSpeed: 0.5
+  walkSpeed: 2
+  runSpeed: 5
+  swingSpeed: 0.1
   waitTimeAtWaypoint: 2
-  viewRadius: 15
-  viewAngle: 90
+  repathInterval: 0.2
+  repathDistance: 0.75
+  viewRadius: 50
+  viewAngle: 300
   playerMask:
     serializedVersion: 2
     m_Bits: 64
   obstacleMask:
     serializedVersion: 2
     m_Bits: 1
+  losCheckInterval: 0.2
   meleeWeapon: {fileID: 5596128847113748887}
   headTransform: {fileID: 7474353014687095198}
-  attackDistance: 5
+  attackDistance: 3.5
   attackCooldown: 1
+  aggroDuration: 6
+  aggroOnDamage: 1
+  bumpRetreatDistance: 2
+  bumpRetreatDuration: 0.8
+  bumpCooldown: 0.5
   onDamaged:
     m_PersistentCalls:
       m_Calls: []
@@ -225,18 +216,23 @@ MonoBehaviour:
   DeathVfx: {fileID: 8950624839484268180, guid: 45ce85b82008be84287f2c7e5bf07647,
     type: 3}
   DeathVfxSpawnPoint: {fileID: 227953148592419932}
-  LootPrefab: {fileID: 5444484267455682382, guid: 250ce8930ddccb548a26af523c1a397e,
-    type: 3}
   DropRate: 1
   DeathDuration: 0
-  deathSoundPause: 0.01
-  deathSoundSFX: {fileID: 8300000, guid: dc3d6c8b936204a4dac84db860f40734, type: 3}
   audiencePickupPrefab: {fileID: 7825903155294947248, guid: 7e738761834870242a9f59ac37498247,
     type: 3}
   corporatePickupPrefab: {fileID: 7825903155294947248, guid: 94c0752532b2fb146896c6241580ece0,
     type: 3}
   currencyManager: {fileID: 0}
+  deathSoundPause: 0.01
+  deathSoundSFX: {fileID: 8300000, guid: dc3d6c8b936204a4dac84db860f40734, type: 3}
   HitSFX: {fileID: 8300000, guid: 53d2238f4c4b2aa4f8e559c7af9e0126, type: 3}
+  slowMoDuration: 0.35
+  slowMoScale: 0.2
+  SlowMoEnabled: 1
+  animParamIsJogging: Jog
+  animParamIsWalking: Walk
+  animParamIsIdling: BBIdle
+  animParamIsStrike: Strike
 --- !u!195 &334220005847167942
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -257,7 +253,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!114 &5360185394228600535
 MonoBehaviour:
@@ -271,7 +267,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27364eefd6dd0341ba72a3bfc0d9727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 100
+  MaxHealth: 200
   CriticalHealthRatio: 0.3
 --- !u!114 &-1191006509936311142
 MonoBehaviour:
@@ -355,7 +351,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604056857072905958}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 7ca6070fd0ca734458097a810e5cd890, type: 3}
+  m_Avatar: {fileID: 9000000, guid: 7ea33e10ff6a2294c9a5b215c0173b27, type: 3}
   m_Controller: {fileID: 9100000, guid: 6a3478b552f85bd47b36f9771c487122, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -376,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2632619244612789469}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Upperleg.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,7 +405,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4428802681526196621}
   - component: {fileID: 1297841741873008357}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -508,7 +504,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3348723605150700403}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LowerArm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -540,7 +536,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1708056950183932878}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: UpperArm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -572,7 +568,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 807552068147308413}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Head_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -603,7 +599,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7206100548378637077}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.L_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -634,7 +630,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7578508892866133787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: UpperArm.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +662,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7875734993036593276}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.R_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -698,7 +694,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9084903651916626370}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Lowerleg.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -730,7 +726,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3428354531797102030}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Upperleg.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,7 +758,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5922358940578263828}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Lowerleg.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -794,7 +790,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 678849612087741515}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.R_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -828,7 +824,7 @@ GameObject:
   - component: {fileID: 2635562434623019902}
   - component: {fileID: 6702379046823579996}
   - component: {fileID: 4966498172737237582}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -928,7 +924,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3295212320475998622}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoint1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -943,7 +939,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5945690424395368204}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5.2600007, y: 0, z: 0}
+  m_LocalPosition: {x: 8.12, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -959,7 +955,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5441854473181977912}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.L_end
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -990,7 +986,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7474353014687095198}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1022,7 +1018,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8128830749515104625}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LowerArm.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1054,7 +1050,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9194397142622643394}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Armature
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1087,7 +1083,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1529970709935162361}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1120,7 +1116,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4517482347572767512}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hand.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1154,7 +1150,7 @@ GameObject:
   - component: {fileID: 3717745300140104822}
   - component: {fileID: 3216748466886997335}
   - component: {fileID: 8598195562421094143}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ImageFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1228,7 +1224,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6572684591395675752}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Hip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1262,7 +1258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4660823055495645506}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1294,7 +1290,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5573265351842836450}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: HealthBarPivot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1326,7 +1322,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8649886526573573995}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Foot.L
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1358,7 +1354,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1196453498691807429}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1392,7 +1388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3877255651281624814}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Waypoint2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1424,7 +1420,7 @@ PrefabInstance:
     - target: {fileID: 37172262226840884, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1604776671231173142, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
@@ -1479,7 +1475,7 @@ PrefabInstance:
     - target: {fileID: 2093786033360550060, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4670246568593848968, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
@@ -1559,13 +1555,18 @@ PrefabInstance:
     - target: {fileID: 4753831000562562256, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5179220304453659723, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: fa2da21c65c10154382de11df789cee9, type: 2}
+    - target: {fileID: 5246846884745188636, guid: 22199dea331926f4c929d51f1551983c,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6514428951816767203, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: RayOrigin
@@ -1579,7 +1580,7 @@ PrefabInstance:
     - target: {fileID: 6868630207480719923, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
       propertyPath: m_Layer
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7743755068491662099, guid: 22199dea331926f4c929d51f1551983c,
         type: 3}
