@@ -263,8 +263,8 @@ public class EnemyAI : MonoBehaviour
     }
 
 
-        // --- cheap visibility check across all child renderers ---
-        private bool IsVisible()
+    // --- cheap visibility check across all child renderers ---
+    private bool IsVisible()
     {
         if (_renderers == null || _renderers.Length == 0) return true; // fail open
         for (int i = 0; i < _renderers.Length; i++)
