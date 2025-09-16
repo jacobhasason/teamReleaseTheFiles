@@ -42,23 +42,31 @@ public class EnemyAI : MonoBehaviour
     // --------- ATTACK ----------
     [Header("Attack Settings")]
     public MeleeWeaponController meleeWeapon;
-    public Transform headTransform;          // Raycast origin for attack
+    public Transform headTransform;
     public float attackDistance = 2f;
     public float attackCooldown = 1f;
 
-    // Small per-enemy random offset so enemies don’t attack on the same frame
     private float _attackJitter;
-
-    // Swing resume timer (no coroutine)
     private float _resumeAt = -1f;
     private float _restoreSpeed = 0f;
 
-    // --------- AGGRO / CHASE ----------
+    // --------- AGGRO ----------
     [Header("Aggro Settings")]
     public float aggroDuration = 8f;
     public bool aggroOnDamage = true;
 
-    // --------- BUMP RETREAT (PATROL ONLY) ----------
+    // --------- KNOCKBACK ----------
+    [Header("Knockback Settings")]
+    public float knockbackForce = 45f;
+    public float knockbackDuration = 1.0f;
+    public AnimationCurve knockbackDamping = AnimationCurve.EaseInOut(0, 1, 1, 1);
+
+    private bool isKnockback = false;
+    private float knockbackStartTime;
+    private Vector3 knockbackDirection;
+    private Transform m_Transform;
+
+    // --------- BUMP RETREAT ----------
     [Header("Bump Retreat (Patrol Only)")]
     public float bumpRetreatDistance = 2.0f;
     public float bumpRetreatDuration = 0.8f;
@@ -91,17 +99,15 @@ public class EnemyAI : MonoBehaviour
     [Header("Audio")]
     public AudioClip HitSFX;
 
-    // --------- SLOW-MO ON LAST ENEMY ----------
+    // --------- SLOW-MO ----------
     [Header("SlowMo (on last enemy death)")]
-    [Tooltip("How long to slow time when the last enemy dies (real seconds).")]
     public float slowMoDuration = 0.35f;
-    [Tooltip("Time.timeScale during slow motion.")]
     [Range(0.01f, 1f)] public float slowMoScale = 0.2f;
     public bool SlowMoEnabled = true;
 
     // --------- ANIMATOR ----------
     [Header("Animator Params")]
-    public string animParamIsJogging = "IsJogging"; // ✅ must match Animator Controller
+    public string animParamIsJogging = "IsJogging";
     private int _hashIsJogging;
 
     // --------- INTERNALS ----------
@@ -120,22 +126,18 @@ public class EnemyAI : MonoBehaviour
     private float aggroEndTime = -1f;
     private Vector3 lastKnownPlayerPos;
 
-    // Bump retreat
     private bool isBumpRetreating = false;
     private float bumpCooldownUntil = -1f;
 
-    // Alive counting (for slow-mo on last death)
     private static int s_aliveCount = 0;
     private bool countedAlive = false;
 
-    // --- NEW: visibility/animation pausing ---
     private Renderer[] _renderers;
     private bool _aiPausedByVisibility = false;
 
-    private static bool s_slowMoActive = false; // guard slow-mo stacking
+    private static bool s_slowMoActive = false;
 
     private bool IsDead => health != null && health.CurrentHealth <= 0;
-
 
     // -------------------- LIFECYCLE --------------------
 
@@ -143,8 +145,8 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         health = GetComponent<Health>();
+        m_Transform = transform;
 
-        // ✅ get Animator from self or children
         anim = GetComponentInChildren<Animator>(true);
         if (anim)
         {
@@ -163,21 +165,17 @@ public class EnemyAI : MonoBehaviour
         if (currencyManager == null)
             currencyManager = FindObjectOfType<CurrencyManager>();
 
-        // Count as alive
         s_aliveCount++;
         countedAlive = true;
 
-        // Attack jitter between 0 and 0.2s
         _attackJitter = Random.Range(0f, 0.2f);
 
-        // --- Visibility setup ---
         _renderers = GetComponentsInChildren<Renderer>(true);
         foreach (var r in _renderers)
         {
             if (r is SkinnedMeshRenderer smr) smr.updateWhenOffscreen = false;
         }
     }
-
 
     private void Start()
     {
@@ -188,6 +186,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         health.OnDie += OnDie;
+        health.OnDamaged += OnDamaged;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -199,13 +198,48 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Defensive: make sure we don't leak the counter if the enemy is destroyed externally
+        if (health != null)
+        {
+            health.OnDamaged -= OnDamaged;
+            health.OnDie -= OnDie;
+        }
+
         if (countedAlive)
         {
             s_aliveCount = Mathf.Max(0, s_aliveCount - 1);
             countedAlive = false;
         }
     }
+
+    // -------------------- KNOCKBACK --------------------
+
+    public void ApplyKnockback(Vector3 hitPoint)
+    {
+        if (IsDead) return;
+
+        Vector3 dir = m_Transform.position - hitPoint;
+        dir.y = 0f;
+
+        if (dir.sqrMagnitude < 0.001f)
+            dir = -m_Transform.forward;
+        else
+            dir.Normalize();
+
+        knockbackDirection = dir;
+        isKnockback = true;
+        knockbackStartTime = Time.time;
+
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.updatePosition = false;
+            agent.ResetPath();
+        }
+
+        if (anim) anim.SetTrigger("Knockback");
+    }
+
+    // -------------------- UPDATE --------------------
 
     private void Update()
     {
@@ -215,18 +249,40 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        // --- Visibility gate: stop anim + AI when not visible ---
+        // Knockback
+        if (isKnockback)
+        {
+            float t = (Time.time - knockbackStartTime) / Mathf.Max(0.0001f, knockbackDuration);
+            if (t < 1f)
+            {
+                float damp = knockbackDamping.Evaluate(Mathf.Clamp01(t));
+                // ✅ knockbackForce is now total displacement in units
+                m_Transform.position += knockbackDirection * knockbackForce * damp * (Time.deltaTime / knockbackDuration);
+            }
+            else
+            {
+                isKnockback = false;
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
+                {
+                    agent.Warp(m_Transform.position);
+                    agent.updatePosition = true;
+                    agent.isStopped = false;
+                }
+            }
+            return;
+        }
+
+        // Visibility gate
         bool visible = IsVisible();
         if (anim && anim.enabled != visible) anim.enabled = visible;
         _aiPausedByVisibility = !visible;
         if (_aiPausedByVisibility)
         {
-            // Keep the agent stopped while off-screen to avoid extra path updates
             if (agent && agent.enabled && agent.isOnNavMesh) agent.isStopped = true;
             return;
         }
 
-        // Resume after swing (no coroutine)
+        // Resume after swing
         if (_resumeAt > 0f && Time.time >= _resumeAt)
         {
             agent.isStopped = false;
@@ -236,7 +292,6 @@ public class EnemyAI : MonoBehaviour
 
         DetectPlayerThrottled();
 
-        // Update aggro window
         if (playerInSight && player != null)
         {
             isAggro = true;
@@ -246,7 +301,6 @@ public class EnemyAI : MonoBehaviour
         if (isAggro && Time.time > aggroEndTime)
             isAggro = false;
 
-        // Priority: retreat > chase/attack > patrol
         if (isBumpRetreating) return;
 
         if (isAggro || playerInSight)
@@ -262,17 +316,45 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-    // --- cheap visibility check across all child renderers ---
     private bool IsVisible()
     {
-        if (_renderers == null || _renderers.Length == 0) return true; // fail open
-        for (int i = 0; i < _renderers.Length; i++)
-            if (_renderers[i] && _renderers[i].isVisible) return true;
+        if (_renderers == null || _renderers.Length == 0) return true;
+        foreach (var r in _renderers)
+            if (r && r.isVisible) return true;
         return false;
     }
 
-    // -------------------- SENSING / LOCOMOTION --------------------
+    // -------------------- DAMAGE --------------------
+
+    private void OnDamaged(float damage, GameObject damageSource)
+    {
+        // Debug.Log($"{gameObject.name} took {damage} from {damageSource}");
+
+        if (aggroOnDamage)
+        {
+            isAggro = true;
+            aggroEndTime = Time.time + aggroDuration;
+
+            if (player != null)
+            {
+                lastKnownPlayerPos = player.position;
+                agent.speed = runSpeed;
+                agent.isStopped = false;
+                agent.SetDestination(lastKnownPlayerPos);
+                _lastDest = lastKnownPlayerPos;
+                _nextRepathTime = Time.time + repathInterval;
+            }
+        }
+
+        // Use exact hit point if Health recorded it
+        if (health.LastHitPoint != Vector3.zero)
+            ApplyKnockback(health.LastHitPoint);
+
+        DetectPlayerThrottled();
+        onDamaged?.Invoke();
+    }
+
+    // -------------------- SENSING --------------------
 
     private void DetectPlayerThrottled()
     {
@@ -289,7 +371,6 @@ public class EnemyAI : MonoBehaviour
             Vector3 dirNorm = dir / (dist > 0.0001f ? dist : 1f);
             if (Vector3.Angle(transform.forward, dirNorm) <= viewAngle * 0.5f)
             {
-                // single LOS ray
                 if (!Physics.Raycast(transform.position, dirNorm, dist, obstacleMask))
                 {
                     playerInSight = true;
@@ -298,6 +379,8 @@ public class EnemyAI : MonoBehaviour
             }
         }
     }
+
+    // -------------------- LOCOMOTION --------------------
 
     private void Patrol()
     {
@@ -327,7 +410,6 @@ public class EnemyAI : MonoBehaviour
         Vector3 dest = (player != null) ? player.position : lastKnownPlayerPos;
         if (player != null) lastKnownPlayerPos = dest;
 
-        // Throttle SetDestination calls
         if (Time.time >= _nextRepathTime || (dest - _lastDest).sqrMagnitude >= repathDistance * repathDistance)
         {
             agent.speed = runSpeed;
@@ -343,8 +425,6 @@ public class EnemyAI : MonoBehaviour
     private void TryAttackPlayerThrottled()
     {
         if (player == null || meleeWeapon == null || headTransform == null) return;
-
-        // staggered cooldown with per-enemy jitter
         if (Time.time < lastAttackTime + attackCooldown + _attackJitter) return;
 
         float distance = Vector3.Distance(headTransform.position, player.position);
@@ -352,7 +432,6 @@ public class EnemyAI : MonoBehaviour
 
         lastAttackTime = Time.time;
 
-        // Slow down and stop briefly to swing
         _restoreSpeed = agent.speed;
         agent.speed = swingSpeed;
         agent.isStopped = true;
@@ -360,14 +439,10 @@ public class EnemyAI : MonoBehaviour
         Vector3 targetPoint = player.position + Vector3.up * 1.0f;
         Vector3 dirToPlayer = (targetPoint - headTransform.position).normalized;
 
-        Debug.DrawRay(headTransform.position, dirToPlayer * meleeWeapon.Range, Color.red, 1f);
-
-        bool blocked = false;
-
-        // Raycast to confirm hit line
         if (Physics.Raycast(headTransform.position, dirToPlayer, out RaycastHit hit, meleeWeapon.Range))
         {
-            // 1) Block check via player's active melee
+            bool blocked = false;
+
             var targetWeapons = hit.collider.GetComponentInParent<PlayerWeaponsManager>();
             if (targetWeapons != null)
             {
@@ -375,12 +450,10 @@ public class EnemyAI : MonoBehaviour
                 var targetMelee = active as MeleeWeaponController;
                 if (targetMelee != null && targetMelee.TryBlockHit())
                 {
-                    blocked = true; // muted damage
-                    // Debug.Log("Enemy attack was blocked.");
+                    blocked = true;
                 }
             }
 
-            // 2) Apply damage only if NOT blocked
             if (!blocked)
             {
                 var h = hit.collider.GetComponentInParent<Health>();
@@ -392,37 +465,13 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
         if (anim) anim.SetTrigger("Strike");
 
-        // Resume movement after a short delay (no coroutine)
-        _resumeAt = Time.time + 0.3f; // tune to match strike anim
+        _resumeAt = Time.time + 0.3f;
     }
 
-    // -------------------- DAMAGE / AGGRO / BUMP --------------------
-
-    public void OnDamaged(float damage)
-    {
-        if (aggroOnDamage)
-        {
-            isAggro = true;
-            aggroEndTime = Time.time + aggroDuration;
-
-            if (player != null)
-            {
-                lastKnownPlayerPos = player.position;
-                agent.speed = runSpeed;
-                agent.isStopped = false;
-                agent.SetDestination(lastKnownPlayerPos);
-                _lastDest = lastKnownPlayerPos;
-                _nextRepathTime = Time.time + repathInterval;
-            }
-        }
-
-        DetectPlayerThrottled();
-        onDamaged?.Invoke();
-    }
+    // -------------------- BUMP RETREAT --------------------
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -479,27 +528,23 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDie()
     {
-        // Ensure we decrement alive count once
         if (countedAlive)
         {
             countedAlive = false;
             s_aliveCount = Mathf.Max(0, s_aliveCount - 1);
         }
 
-        // VFX
         if (DeathVfx != null && DeathVfxSpawnPoint != null)
         {
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
         }
 
-        // SFX
         if (deathSoundSFX != null && audioSource != null)
         {
             StartCoroutine(DeathSoundProc());
         }
 
-        // Drops
         if (audiencePickupPrefab != null && Random.value <= DropRate)
             Instantiate(audiencePickupPrefab, transform.position, Quaternion.identity);
 
@@ -510,7 +555,6 @@ public class EnemyAI : MonoBehaviour
                 Instantiate(corporatePickupPrefab, transform.position, Quaternion.identity);
         }
 
-        // SLOW-MO if this was the LAST enemy
         if (SlowMoEnabled && s_aliveCount == 0)
         {
             StartCoroutine(PlayLastKillSlowMoSafe());
@@ -530,7 +574,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // --- SAFE SLOW-MO: single-shot + guaranteed restore ---
     private IEnumerator PlayLastKillSlowMoSafe()
     {
         if (s_slowMoActive) yield break;
