@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
 using UnityEngine;
@@ -109,7 +109,19 @@ public class MeleeWeaponController : WeaponController
             StartCoroutine(SwingProc());
 
             var health = hit.collider.GetComponentInParent<Health>();
-            
+
+            if (health != null)
+            {
+                health.LastHitPoint = hit.point;  // ✅ store impact position
+                health.TakeDamage(finalDamage, gameObject);
+            }
+
+            if (health != null)
+            {
+                health.LastHitPoint = hit.point;  // ? store impact position
+                health.TakeDamage(finalDamage, gameObject);
+            }
+
             if (health != null)
                 if (finalDamage >= health.CurrentHealth)
                 {

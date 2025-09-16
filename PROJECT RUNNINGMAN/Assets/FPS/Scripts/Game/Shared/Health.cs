@@ -14,6 +14,8 @@ namespace Unity.FPS.Game
         public UnityAction<float> OnHealed;
         public UnityAction OnDie;
 
+        public Vector3 LastHitPoint { get; set; }
+
         public float CurrentHealth { get; set; }
         public bool Invincible { get; set; }
         public bool CanPickup() => CurrentHealth < MaxHealth;
