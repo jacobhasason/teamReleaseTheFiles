@@ -156,6 +156,10 @@ public class EnemyAI : MonoBehaviour
         {
             anim.cullingMode = AnimatorCullingMode.CullCompletely;
             _hashIsJogging = Animator.StringToHash(animParamIsJogging);
+            _hashIsWalking = Animator.StringToHash(animParamIsWalking);
+            _hashIsIdling = Animator.StringToHash(animParamIsIdling);
+            _hashIsStriking = Animator.StringToHash(animParamIsStrike);
+
         }
 
         audioSource = GetComponent<AudioSource>();
@@ -240,6 +244,8 @@ public class EnemyAI : MonoBehaviour
             agent.speed = _restoreSpeed > 0f ? _restoreSpeed : runSpeed;
             _resumeAt = -1f;
             if (anim) anim?.SetBool("Strike", false);
+            if (anim) anim.SetTrigger("Walk");
+
         }
 
         DetectPlayerThrottled();
@@ -264,12 +270,14 @@ public class EnemyAI : MonoBehaviour
             if (attackDistance >= distance) TryAttackPlayerThrottled();
             if (anim) anim?.SetBool("Jog", true);
             if (anim) anim?.SetBool("Walk", false);
+            if (anim) anim.SetTrigger("Jog");
         }
         else
         {
             Patrol();
             if (anim) anim?.SetBool("Jog", false);
             if (anim) anim?.SetBool("Walk", true);
+            if (anim) anim.SetTrigger("Walk");
         }
     }
 
@@ -406,6 +414,7 @@ public class EnemyAI : MonoBehaviour
         // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
         if (anim) anim?.SetBool("Strike", true);
+        if (anim) anim.SetTrigger("Strike");
 
         // Resume movement after a short delay (no coroutine)
         _resumeAt = Time.time + 0.3f; // tune to match strike anim
