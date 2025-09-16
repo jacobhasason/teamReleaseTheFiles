@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Damage:
-    Min: 30
+    Min: 40
     Max: 90
   Radius:
     Min: 0.2

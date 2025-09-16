@@ -226,7 +226,8 @@ public class EnemyAI : MonoBehaviour
         }
 
         // --- Visibility gate: stop anim + AI when not visible ---
-        bool visible = IsVisible();
+        //bool visible = IsVisible();
+        bool visible = true;
         if (anim && anim.enabled != visible) anim.enabled = visible;
         _aiPausedByVisibility = !visible;
         if (_aiPausedByVisibility)
@@ -464,7 +465,7 @@ public class EnemyAI : MonoBehaviour
         {
             DetectPlayerThrottled();
             ChasePlayerThrottled();
-            TryAttackPlayerThrottled();
+            //TryAttackPlayerThrottled();
         }
     }
 

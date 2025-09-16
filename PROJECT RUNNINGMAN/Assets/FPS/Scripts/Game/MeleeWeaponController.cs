@@ -32,7 +32,7 @@ public class MeleeWeaponController : WeaponController
     public bool IsBlocking { get; private set; }
 
     [Range(0f, 1f)]
-    public float BlockChance = 0.66f; // 66% of hits are blocked
+    public float BlockChance = 0.66f; // 66% of hits are blocked by default
 
     private PlayerInputHandler _input;
 

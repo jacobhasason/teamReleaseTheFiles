@@ -26,8 +26,9 @@ public class WaveSpawner : MonoBehaviour
     [Header("UI & Feedback")]
     public DisplayMessage waveMessageManager;
 
+    
+    public int waveCount = 54;
     [HideInInspector]
-    public int waveCount = 0;
     private int enemiesAlive = 0;
     private bool isWaitingBetweenWaves = false;
     [HideInInspector]
