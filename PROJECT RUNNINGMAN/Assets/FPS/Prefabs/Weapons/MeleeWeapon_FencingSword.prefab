@@ -227,7 +227,7 @@ MonoBehaviour:
   Range: 2
   AttackRate: 1
   HitSoundPause: 0.07
-  EnableKnockback: 1
+  EnableKnockback: 0
   KnockbackForce: 0
   KnockbackDuration: 0.15
   KnockbackDamping:

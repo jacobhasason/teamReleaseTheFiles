@@ -188,8 +188,8 @@ MonoBehaviour:
   waypoints:
   - {fileID: 3295212320475998622}
   - {fileID: 3877255651281624814}
-  walkSpeed: 3
-  runSpeed: 5
+  walkSpeed: 6
+  runSpeed: 8
   swingSpeed: 0.5
   waitTimeAtWaypoint: 2
   repathInterval: 0.2
@@ -300,7 +300,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e27364eefd6dd0341ba72a3bfc0d9727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxHealth: 200
+  MaxHealth: 100
   CriticalHealthRatio: 0.3
 --- !u!114 &-1191006509936311142
 MonoBehaviour:

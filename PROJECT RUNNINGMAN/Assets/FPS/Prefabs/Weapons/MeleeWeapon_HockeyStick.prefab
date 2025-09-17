@@ -229,8 +229,8 @@ MonoBehaviour:
   AttackRate: 2
   HitSoundPause: 0.07
   EnableKnockback: 1
-  KnockbackForce: 2
-  KnockbackDuration: 0.15
+  KnockbackForce: 10
+  KnockbackDuration: 0.75
   KnockbackDamping:
     serializedVersion: 2
     m_Curve:

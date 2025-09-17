@@ -229,7 +229,7 @@ MonoBehaviour:
   HitSoundPause: 0.07
   EnableKnockback: 1
   KnockbackForce: 25
-  KnockbackDuration: 2
+  KnockbackDuration: 3
   KnockbackDamping:
     serializedVersion: 2
     m_Curve:
