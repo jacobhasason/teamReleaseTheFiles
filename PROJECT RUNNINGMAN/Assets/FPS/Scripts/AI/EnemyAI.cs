@@ -1,9 +1,10 @@
 ﻿using System.Collections;
+using Unity.FPS.Game;
+using Unity.FPS.Gameplay;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
-using Unity.FPS.Game;
-using Unity.FPS.Gameplay;
+using static Codice.Client.Commands.WkTree.WorkspaceTreeNode;
 
 [RequireComponent(typeof(NavMeshAgent), typeof(Health))]
 public class EnemyAI : MonoBehaviour
@@ -143,7 +144,9 @@ public class EnemyAI : MonoBehaviour
     private bool isKnockback = false;
     private float knockbackStartTime;
     private Vector3 knockbackDirection;
+    private Vector3 lastknockbackDirection;
     private Transform m_Transform;
+    private float knockBackRayCheck = 4.5f;
 
     // Alive counting (for slow-mo)
     private static int s_aliveCount = 0;
@@ -258,6 +261,7 @@ public class EnemyAI : MonoBehaviour
         else
             dir.Normalize();
         knockbackDirection = dir;
+        lastknockbackDirection = dir;
         isKnockback = true;
         knockbackStartTime = Time.time;
         if (agent != null && agent.enabled && agent.isOnNavMesh)
@@ -275,6 +279,7 @@ public class EnemyAI : MonoBehaviour
 
         }
         if (anim) anim.SetTrigger(k_AnimOnKnockbackParameter);
+        
     }
 
     // -------------------- UPDATE --------------------
@@ -288,8 +293,14 @@ public class EnemyAI : MonoBehaviour
         // --- Visibility gate: stop anim + AI when not visible ---
         // Knockback
         if (isKnockback)
-        {
+        {   
+
             float t = (Time.time - knockbackStartTime) / Mathf.Max(0.0001f, knockbackDuration);
+            if (Physics.Raycast(headTransform.position, lastknockbackDirection, out RaycastHit hit, knockBackRayCheck))
+            {
+                isKnockback = false;
+                agent.isStopped = true;
+            }
             if (t < 1f)
             {
                 float damp = knockbackDamping.Evaluate(Mathf.Clamp01(t));
