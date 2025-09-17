@@ -146,7 +146,7 @@ public class EnemyAI : MonoBehaviour
     private Vector3 knockbackDirection;
     private Vector3 lastknockbackDirection;
     private Transform m_Transform;
-    private float knockBackRayCheck = 4.5f;
+    public float knockBackRayCheck = 4.5f;
 
     // Alive counting (for slow-mo)
     private static int s_aliveCount = 0;
