@@ -136,7 +136,8 @@ using Unity.FPS.Gameplay;
         private bool isBumpRetreating = false;
         private float bumpCooldownUntil = -1f;
 
-        // --------- KNOCKBACK ----------
+     
+       // --------- KNOCKBACK ----------
         [Header("Knockback Settings")]
         public float knockbackForce = 45f;
         public float knockbackDuration = 1.0f;
@@ -144,10 +145,12 @@ using Unity.FPS.Gameplay;
         private bool isKnockback = false;
         private float knockbackStartTime;
         private Vector3 knockbackDirection;
+        private Vector3 lastknockbackDirection;
         private Transform m_Transform;
-
-        // Alive counting (for slow-mo)
-        private static int s_aliveCount = 0;
+        public float knockBackRayCheck = 4.5f;
+    
+    // Alive counting (for slow-mo)
+    private static int s_aliveCount = 0;
         private bool countedAlive = false;
 
         // --- NEW: visibility/animation pausing ---
@@ -281,34 +284,35 @@ using Unity.FPS.Gameplay;
                 agent.isStopped = true;
                 return;
             }
-            // --- Visibility gate: stop anim + AI when not visible ---
-            // Knockback
-            if (isKnockback)
+        // --- Visibility gate: stop anim + AI when not visible ---
+        // Knockback
+        if (isKnockback)
+        {
+            float t = (Time.time - knockbackStartTime) / Mathf.Max(0.0001f, knockbackDuration);
+            if (Physics.Raycast(headTransform.position, lastknockbackDirection, out RaycastHit hit, knockBackRayCheck))
             {
-                float t = (Time.time - knockbackStartTime) / Mathf.Max(0.0001f, knockbackDuration);
-                if (t < 1f)
-                {
-                    float damp = knockbackDamping.Evaluate(Mathf.Clamp01(t));
-                    // ✅ knockbackForce is now total displacement in units
-                    m_Transform.position += knockbackDirection * knockbackForce * damp * (Time.deltaTime / knockbackDuration);
-                }
-                else
-
-                {
-                    isKnockback = false;
-                    if (agent != null && agent.enabled && agent.isOnNavMesh)
-                    {
-
-                        agent.Warp(m_Transform.position);
-                        agent.updatePosition = true;
-                        agent.isStopped = false;
-                    }
-                }
+                isKnockback = false;
+                agent.isStopped = true;
                 return;
             }
-
-
-
+            if (t < 1f)
+            {
+                float damp = knockbackDamping.Evaluate(Mathf.Clamp01(t));
+                // ✅ knockbackForce is now total displacement in units
+                m_Transform.position += knockbackDirection * knockbackForce * damp * (Time.deltaTime / knockbackDuration);
+            }
+            else
+            {
+                isKnockback = false;
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
+                {
+                    agent.Warp(m_Transform.position);
+                    agent.updatePosition = true;
+                    agent.isStopped = false;
+                }
+            }
+            return;
+        }
 
             //bool visible = IsVisible();
             bool visible = true;
