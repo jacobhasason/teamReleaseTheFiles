@@ -110,6 +110,11 @@ public class EnemyAI : MonoBehaviour
     public string animParamIsStrike = "Strike"; // ✅ must match Animator Controller
     private int _hashIsStriking;
 
+    const string k_AnimPatrolParameter = "TrPatrol";
+    const string k_AnimChaseParameter = "TrChase";
+    const string k_AnimAttackParameter = "TrStrike";
+    const string k_AnimIdleParameter = "TrIdle";
+    const string k_AnimOnKnockbackParameter = "TrKnockback";
     // --------- INTERNALS ----------
     private NavMeshAgent agent;
     private Health health;
@@ -130,7 +135,17 @@ public class EnemyAI : MonoBehaviour
     private bool isBumpRetreating = false;
     private float bumpCooldownUntil = -1f;
 
-    // Alive counting (for slow-mo on last death)
+    // --------- KNOCKBACK ----------
+    [Header("Knockback Settings")]
+    public float knockbackForce = 45f;
+    public float knockbackDuration = 1.0f;
+    public AnimationCurve knockbackDamping = AnimationCurve.EaseInOut(0, 1, 1, 1);
+    private bool isKnockback = false;
+    private float knockbackStartTime;
+    private Vector3 knockbackDirection;
+    private Transform m_Transform;
+
+    // Alive counting (for slow-mo)
     private static int s_aliveCount = 0;
     private bool countedAlive = false;
 
@@ -149,7 +164,7 @@ public class EnemyAI : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         health = GetComponent<Health>();
-
+        m_Transform = transform;
         // ✅ get Animator from self or children
         anim = GetComponentInChildren<Animator>(true);
         if (anim)
@@ -198,6 +213,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         health.OnDie += OnDie;
+        health.OnDamaged += OnDamaged;
+
+
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
@@ -209,6 +227,13 @@ public class EnemyAI : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (health != null)
+        {
+            health.OnDamaged -= OnDamaged;
+            health.OnDie -= OnDie;
+        }
+
+
         // Defensive: make sure we don't leak the counter if the enemy is destroyed externally
         if (countedAlive)
         {
@@ -216,7 +241,43 @@ public class EnemyAI : MonoBehaviour
             countedAlive = false;
         }
     }
+    // -------------------- KNOCKBACK --------------------
 
+
+
+
+
+
+    public void ApplyKnockback(Vector3 hitPoint)
+    {
+        if (IsDead) return;
+        Vector3 dir = m_Transform.position - hitPoint;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.001f)
+            dir = -m_Transform.forward;
+        else
+            dir.Normalize();
+        knockbackDirection = dir;
+        isKnockback = true;
+        knockbackStartTime = Time.time;
+        if (agent != null && agent.enabled && agent.isOnNavMesh)
+
+
+        {
+            agent.isStopped = true;
+
+
+            agent.updatePosition = false;
+
+
+            agent.ResetPath();
+
+
+        }
+        if (anim) anim.SetTrigger(k_AnimOnKnockbackParameter);
+    }
+
+    // -------------------- UPDATE --------------------
     private void Update()
     {
         if (IsDead)
@@ -224,8 +285,35 @@ public class EnemyAI : MonoBehaviour
             agent.isStopped = true;
             return;
         }
-
         // --- Visibility gate: stop anim + AI when not visible ---
+        // Knockback
+        if (isKnockback)
+        {
+            float t = (Time.time - knockbackStartTime) / Mathf.Max(0.0001f, knockbackDuration);
+            if (t < 1f)
+            {
+                float damp = knockbackDamping.Evaluate(Mathf.Clamp01(t));
+                // ✅ knockbackForce is now total displacement in units
+                m_Transform.position += knockbackDirection * knockbackForce * damp * (Time.deltaTime / knockbackDuration);
+            }
+            else
+
+            {
+                isKnockback = false;
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
+                {
+
+                    agent.Warp(m_Transform.position);
+                    agent.updatePosition = true;
+                    agent.isStopped = false;
+                }
+            }
+            return;
+        }
+        
+
+
+
         //bool visible = IsVisible();
         bool visible = true;
         if (anim && anim.enabled != visible) anim.enabled = visible;
@@ -244,8 +332,6 @@ public class EnemyAI : MonoBehaviour
             agent.isStopped = false;
             agent.speed = _restoreSpeed > 0f ? _restoreSpeed : runSpeed;
             _resumeAt = -1f;
-            if (anim) anim?.SetBool("Strike", false);
-            if (anim) anim.SetTrigger("Walk");
 
         }
 
@@ -269,16 +355,13 @@ public class EnemyAI : MonoBehaviour
             ChasePlayerThrottled();
             float distance = Vector3.Distance(headTransform.position, player.position);
             if (attackDistance >= distance) TryAttackPlayerThrottled();
-            if (anim) anim?.SetBool("Jog", true);
-            if (anim) anim?.SetBool("Walk", false);
-            if (anim) anim.SetTrigger("Jog");
+            if (anim) anim.SetTrigger(k_AnimChaseParameter);
         }
         else
         {
             Patrol();
-            if (anim) anim?.SetBool("Jog", false);
-            if (anim) anim?.SetBool("Walk", true);
-            if (anim) anim.SetTrigger("Walk");
+
+            if (anim) anim.SetTrigger(k_AnimPatrolParameter);
         }
     }
 
@@ -286,13 +369,54 @@ public class EnemyAI : MonoBehaviour
         // --- cheap visibility check across all child renderers ---
         private bool IsVisible()
     {
-        if (_renderers == null || _renderers.Length == 0) return true; // fail open
-        for (int i = 0; i < _renderers.Length; i++)
-            if (_renderers[i] && _renderers[i].isVisible) return true;
+        if (_renderers == null || _renderers.Length == 0) return true;
+        foreach (var r in _renderers)
+            if (r && r.isVisible) return true;
         return false;
     }
 
     // -------------------- SENSING / LOCOMOTION --------------------
+    // -------------------- DAMAGE --------------------
+
+
+
+
+
+
+    private void OnDamaged(float damage, GameObject damageSource)
+    {
+        // Debug.Log($"{gameObject.name} took {damage} from {damageSource}");
+        if (aggroOnDamage)
+        {
+            isAggro = true;
+            aggroEndTime = Time.time + aggroDuration;
+            if (player != null)
+            {
+                lastKnownPlayerPos = player.position;
+                agent.speed = runSpeed;
+
+                agent.isStopped = false;
+                agent.SetDestination(lastKnownPlayerPos);
+                _lastDest = lastKnownPlayerPos;
+                _nextRepathTime = Time.time + repathInterval;
+            }
+            
+        }
+
+        // Use exact hit point if Health recorded it
+
+        if (health.LastHitPoint != Vector3.zero) ApplyKnockback(health.LastHitPoint);
+
+        DetectPlayerThrottled();
+        onDamaged?.Invoke();
+    }
+
+
+
+
+
+    // -------------------- SENSING --------------------
+
 
     private void DetectPlayerThrottled()
     {
@@ -337,6 +461,7 @@ public class EnemyAI : MonoBehaviour
             else
             {
                 agent.isStopped = true;
+                if (anim) anim.SetTrigger(k_AnimIdleParameter);
                 waitTimer -= Time.deltaTime;
             }
         }
@@ -414,8 +539,7 @@ public class EnemyAI : MonoBehaviour
 
         // 3) Always play the melee swing
         meleeWeapon.PerformAttack(headTransform, dirToPlayer);
-        if (anim) anim?.SetBool("Strike", true);
-        if (anim) anim.SetTrigger("Strike");
+        if (anim) anim.SetTrigger(k_AnimAttackParameter);
 
         // Resume movement after a short delay (no coroutine)
         _resumeAt = Time.time + 0.3f; // tune to match strike anim
@@ -443,6 +567,7 @@ public class EnemyAI : MonoBehaviour
 
         DetectPlayerThrottled();
         onDamaged?.Invoke();
+        
     }
 
     private void OnCollisionEnter(Collision collision)
