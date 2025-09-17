@@ -16,7 +16,7 @@ public class MeleeWeaponController : WeaponController
     public override bool IsMelee => true;
 
     [Header("Modifiers")]
-    public float AdditionalDamage = 0f;
+    public float AddedDamage = 0f;
 
     float m_LastAttackTime;
 
@@ -98,7 +98,7 @@ public class MeleeWeaponController : WeaponController
     public void PerformAttack(Transform attackOrigin, Vector3 direction)
     {
         
-        float finalDamage = Damage + AdditionalDamage;
+        float finalDamage = Damage + AddedDamage;
         WeaponAnimator?.SetTrigger("Swing");
         MeleeAudioSource.PlayOneShot(SwingSfx);
 

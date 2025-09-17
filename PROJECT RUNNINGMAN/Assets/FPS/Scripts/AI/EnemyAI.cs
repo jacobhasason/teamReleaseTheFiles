@@ -138,7 +138,7 @@ public class EnemyAI : MonoBehaviour
 
     // --------- KNOCKBACK ----------
     [Header("Knockback Settings")]
-    public float knockbackForce = 45f;
+    public float knockbackForce = 7f;
     public float knockbackDuration = 1.0f;
     public AnimationCurve knockbackDamping = AnimationCurve.EaseInOut(0, 1, 1, 1);
     private bool isKnockback = false;

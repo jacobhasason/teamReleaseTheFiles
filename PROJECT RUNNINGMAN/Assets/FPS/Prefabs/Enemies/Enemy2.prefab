@@ -188,7 +188,7 @@ MonoBehaviour:
   waypoints:
   - {fileID: 3295212320475998622}
   - {fileID: 3877255651281624814}
-  walkSpeed: 5
+  walkSpeed: 6
   runSpeed: 8
   swingSpeed: 0.1
   waitTimeAtWaypoint: 2
