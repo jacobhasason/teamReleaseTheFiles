@@ -325,12 +325,40 @@ MonoBehaviour:
   Range: 1.5
   AttackRate: 1.5
   HitSoundPause: 0.07
-  AdditionalMeleeDamage: 0
+  EnableKnockback: 1
+  KnockbackForce: 10
+  KnockbackDuration: 0.15
+  KnockbackDamping:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0.4
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  AdditionalDamage: 0
   HitFlashPrefab: {fileID: 0}
   SwingSfx: {fileID: 8300000, guid: 13b59a14d34add64d84a623867546ff1, type: 3}
   HitSoundSfx: {fileID: 8300000, guid: f827808dd9ed41f49a20104c117f205a, type: 3}
   ToneSoundSfx: {fileID: 8300000, guid: 5022d7e045614154790a39bb3cd57b0f, type: 3}
   TonedSounds: {fileID: 0}
+  BlockChance: 0.9
 --- !u!1 &7733336267567488170
 GameObject:
   m_ObjectHideFlags: 0
