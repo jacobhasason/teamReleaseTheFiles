@@ -68,6 +68,7 @@ public class EnemyAI : MonoBehaviour
     // --------- EVENTS ----------
     [Header("Events")]
     public UnityEvent onDamaged;
+    public static UnityEvent onKnockback = new UnityEvent.KnockbackEvent();
     public UnityEvent onDie;
 
     // --------- DEBUG ----------
@@ -138,6 +139,7 @@ public class EnemyAI : MonoBehaviour
 
     // --------- KNOCKBACK ----------
     [Header("Knockback Settings")]
+    
     public float knockbackForce = 7f;
     public float knockbackDuration = 1.0f;
     public AnimationCurve knockbackDamping = AnimationCurve.EaseInOut(0, 1, 1, 1);
@@ -226,6 +228,8 @@ public class EnemyAI : MonoBehaviour
 
         if (player != null)
             lastKnownPlayerPos = player.position;
+        onKnockback.AddListener(ApplyKnockback);
+
     }
 
     private void OnDestroy()
@@ -300,6 +304,7 @@ public class EnemyAI : MonoBehaviour
             {
                 isKnockback = false;
                 agent.isStopped = true;
+                return;
             }
             if (t < 1f)
             {

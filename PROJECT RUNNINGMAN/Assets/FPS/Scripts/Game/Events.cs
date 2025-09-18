@@ -16,6 +16,7 @@ namespace Unity.FPS.Game
         public static PickupEvent PickupEvent = new PickupEvent();
         public static AmmoPickupEvent AmmoPickupEvent = new AmmoPickupEvent();
         public static DamageEvent DamageEvent = new DamageEvent();
+        public static KnockbackEvent KnockbackEvent = new KnockbackEvent();
         public static DisplayMessageEvent DisplayMessageEvent = new DisplayMessageEvent();
     }
 
@@ -57,6 +58,13 @@ namespace Unity.FPS.Game
     {
         public GameObject Sender;
         public float DamageValue;
+    }
+    public class KnockbackEvent : GameEvent
+    {
+        public GameObject Sender;
+        public float KnockbackForce;
+        public float KnockbackDuration;
+        public AnimationCurve KnockbackDampCurve;
     }
 
     public class DisplayMessageEvent : GameEvent
