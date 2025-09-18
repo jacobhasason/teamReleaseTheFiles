@@ -17,7 +17,7 @@ public class WaveSpawner : MonoBehaviour
     public Transform[] SpawnPoints;
 
     [Header("Wave Settings")]
-    public int MaxEnemiesPerWave = 30;
+    public int MaxEnemiesPerWave = 25;
     public float TimeBetweenWaves = 5f;
 
     [Header("Player")]
@@ -27,7 +27,7 @@ public class WaveSpawner : MonoBehaviour
     public DisplayMessage waveMessageManager;
 
     
-    public int waveCount = 54;
+    public int waveCount = 0;
     [HideInInspector]
     private int enemiesAlive = 0;
     private bool isWaitingBetweenWaves = false;
@@ -130,7 +130,7 @@ public class WaveSpawner : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // Spawn enemies one by one
-        int enemiesToSpawn = Mathf.Min(waveCount, MaxEnemiesPerWave);
+        int enemiesToSpawn = Mathf.Min(waveCount + 2, MaxEnemiesPerWave);
         enemiesAlive = enemiesToSpawn;
 
         Debug.Log($"Spawning Wave {waveCount} with {enemiesAlive} enemies.");
