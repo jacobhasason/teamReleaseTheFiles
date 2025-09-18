@@ -328,7 +328,6 @@ public class EnemyAI : MonoBehaviour
         // Resume after swing (no coroutine)
         if (_resumeAt > 0f && Time.time >= _resumeAt)
         {
-
             agent.isStopped = false;
             agent.speed = _restoreSpeed > 0f ? _restoreSpeed : runSpeed;
             _resumeAt = -1f;
@@ -354,8 +353,15 @@ public class EnemyAI : MonoBehaviour
         {
             ChasePlayerThrottled();
             float distance = Vector3.Distance(headTransform.position, player.position);
-            if (attackDistance >= distance) TryAttackPlayerThrottled();
-            if (anim) anim.SetTrigger(k_AnimChaseParameter);
+            if (attackDistance >= distance)
+            {
+                TryAttackPlayerThrottled();
+                anim.SetTrigger(k_AnimAttackParameter);
+            }
+            if (anim)
+            {
+                anim.SetTrigger(k_AnimChaseParameter);
+            }
         }
         else
         {
@@ -546,7 +552,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Resume movement after a short delay (no coroutine)
-        //_resumeAt = Time.time + 0.3f; // tune to match strike anim
+        _resumeAt = Time.time + 0.3f; // tune to match strike anim
     }
 
     // -------------------- DAMAGE / AGGRO / BUMP --------------------
