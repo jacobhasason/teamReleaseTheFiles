@@ -259,6 +259,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  knockBackRayCheck: 4.5
 --- !u!195 &334220005847167942
 NavMeshAgent:
   m_ObjectHideFlags: 0

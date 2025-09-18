@@ -44,7 +44,7 @@ using Unity.FPS.Gameplay;
         [Header("Attack Settings")]
         public MeleeWeaponController meleeWeapon;
         public Transform headTransform;          // Raycast origin for attack
-        public float attackDistance = 2f;
+        public float attackDistance = 3f;
         public float attackCooldown = 1f;
 
         // Small per-enemy random offset so enemies don’t attack on the same frame
@@ -354,9 +354,14 @@ using Unity.FPS.Gameplay;
             {
                 ChasePlayerThrottled();
                 float distance = Vector3.Distance(headTransform.position, player.position);
-                if (attackDistance >= distance) TryAttackPlayerThrottled();
-                if (anim) anim.SetTrigger(k_AnimChaseParameter);
-            }
+                
+                if (attackDistance >= distance)
+                {
+                    anim.SetTrigger(k_AnimAttackParameter); 
+                    TryAttackPlayerThrottled();
+                    
+                }
+        }
             else
             {
                 Patrol();
@@ -480,7 +485,13 @@ using Unity.FPS.Gameplay;
                 agent.SetDestination(dest);
                 _lastDest = dest;
                 _nextRepathTime = Time.time + repathInterval;
-            }
+                float distance = Vector3.Distance(headTransform.position, player.position);
+                if (distance > attackDistance)
+                {
+                    
+                    if (anim) anim.SetTrigger(k_AnimChaseParameter);
+                }
+        }
         }
 
         // -------------------- ATTACK --------------------
@@ -540,9 +551,11 @@ using Unity.FPS.Gameplay;
             // 3) Always play the melee swing
             meleeWeapon.PerformAttack(headTransform, dirToPlayer);
             if (anim) anim.SetTrigger(k_AnimAttackParameter);
+            
 
-            // Resume movement after a short delay (no coroutine)
-            _resumeAt = Time.time + 0.3f; // tune to match strike anim
+
+        // Resume movement after a short delay (no coroutine)
+        _resumeAt = Time.time + 0.3f; // tune to match strike anim
         }
 
         // -------------------- DAMAGE / AGGRO / BUMP --------------------
