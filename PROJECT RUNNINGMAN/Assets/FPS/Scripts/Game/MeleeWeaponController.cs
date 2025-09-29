@@ -11,7 +11,7 @@ using System.Threading.Tasks;
     {
         public float Damage = 40f;
         public float KBDamage = 1f;
-        public float Range = 2f;
+        public float Range = 1f;
         public float AttackRate = 1f;
         public float HitSoundPause = .08f;
         public override bool IsMelee => true;

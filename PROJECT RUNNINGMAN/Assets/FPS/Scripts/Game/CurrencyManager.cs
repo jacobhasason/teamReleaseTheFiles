@@ -23,7 +23,7 @@ namespace Unity.FPS.Gameplay {
         {
             DontDestroyOnLoad(gameObject);
             // How much Audience Favor the player starts with
-            AddCurrency(CurrencyType.AudienceFavor, 30);
+            AddCurrency(CurrencyType.AudienceFavor, 50);
         }
 
         // Add currency of a given type
