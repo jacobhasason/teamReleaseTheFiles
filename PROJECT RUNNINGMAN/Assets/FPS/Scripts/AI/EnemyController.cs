@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using Unity.FPS.Gameplay;
+using UnityEngine.UIElements;
 
 namespace Unity.FPS.AI
 {
@@ -94,10 +95,12 @@ namespace Unity.FPS.AI
         public UnityAction onDetectedTarget;
         public UnityAction onLostTarget;
         public UnityAction onDamaged;
+        public UnityAction onKnockback;
 
         List<RendererIndexData> m_BodyRenderers = new List<RendererIndexData>();
         MaterialPropertyBlock m_BodyFlashMaterialPropertyBlock;
         float m_LastTimeDamaged = float.NegativeInfinity;
+        float m_LastTimeKnocked = float.NegativeInfinity;
 
         RendererIndexData m_EyeRendererData;
         MaterialPropertyBlock m_EyeColorMaterialPropertyBlock;
@@ -110,10 +113,13 @@ namespace Unity.FPS.AI
         public NavMeshAgent NavMeshAgent { get; private set; }
         public DetectionModule DetectionModule { get; private set; }
 
+        public Vector3 PositionDifferential;
+
         int m_PathDestinationNodeIndex;
         EnemyManager m_EnemyManager;
         ActorsManager m_ActorsManager;
         Health m_Health;
+        KBHealth m_KBHealth;
         Actor m_Actor;
         Collider[] m_SelfColliders;
         GameFlowManager m_GameFlowManager;
@@ -142,6 +148,9 @@ namespace Unity.FPS.AI
             m_Health = GetComponent<Health>();
             DebugUtility.HandleErrorIfNullGetComponent<Health, EnemyController>(m_Health, this, gameObject);
 
+            m_KBHealth = GetComponent<KBHealth>();
+            DebugUtility.HandleErrorIfNullGetComponent<KBHealth, EnemyController>(m_KBHealth, this, gameObject);
+
             m_Actor = GetComponent<Actor>();
             DebugUtility.HandleErrorIfNullGetComponent<Actor, EnemyController>(m_Actor, this, gameObject);
 
@@ -154,7 +163,7 @@ namespace Unity.FPS.AI
             // Subscribe to damage & death actions
             m_Health.OnDie += OnDie;
             m_Health.OnDamaged += OnDamaged;
-
+            m_KBHealth.OnKnockback += OnKnockback;
             // Find and initialize all weapons
             FindAndInitializeAllWeapons();
             var weapon = GetCurrentWeapon();
@@ -367,7 +376,20 @@ namespace Unity.FPS.AI
                 m_WasDamagedThisFrame = true;
             }
         }
+        void OnKnockback(float damage, GameObject damageSource)
+        {
+            // test if the damage source is the player
+            if (damageSource && !damageSource.GetComponent<EnemyController>())
+            {
+                
+                PositionDifferential = transform.position - damageSource.transform.position;
 
+                onKnockback?.Invoke();
+                m_LastTimeKnocked = Time.time;
+
+                m_WasDamagedThisFrame = true;
+            }
+        }
         void OnDie()
         {
           
